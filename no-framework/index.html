@@ -12,6 +12,12 @@
             margin: 0;
             padding: 0;
         }
+        header {
+            background-color: #3273dc;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
         .container {
             max-width: 800px;
             margin: 50px auto;
@@ -73,9 +79,21 @@
         .task-list li .delete:hover {
             background-color: #e02745;
         }
+        footer {
+            background-color: #3273dc;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
     </style>
 </head>
 <body>
+    <header>
+        <h1>Task List Application</h1>
+    </header>
     <div class="container">
         <h1>Task List</h1>
         <div class="task-input">
@@ -86,6 +104,9 @@
             <!-- Tasks will be added here dynamically -->
         </ul>
     </div>
+    <footer>
+        <p>&copy; 2023 Task List Application</p>
+    </footer>
     <script>
         function addTask() {
             const taskInput = document.getElementById('task');
