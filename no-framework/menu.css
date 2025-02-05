@@ -1,0 +1,50 @@
+body {
+    background-color: rgb(200, 250, 200);
+    /*text-align: center;*/
+}
+
+.bubble {
+    background-color: white;
+    max-width: fit-content;
+    margin-inline: auto;
+}
+
+nav {
+    display: flex;
+    position: sticky;
+    align-items: center;
+    top: 0px;
+    background: green;
+    background-blend-mode: darken;
+    background-size: cover;
+    padding: 10px 20px;
+}
+
+.divbutton {
+    margin-left : 1em;
+    margin-right : 1em;
+}
+
+.dropdown-content {
+    display: none;
+}
+
+.divbutton:hover .dropdown-content {
+    /*display: block;*/
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color:lightgreen;
+}
+
+a:hover {
+    background-color: yellow;
+}
+
+h2, h3 {
+    font-weight: bold;
+}
+
+h2.edit {
+    font-weight: normal;
+}
