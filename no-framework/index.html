@@ -1,176 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-        }
-        header {
-            background-color: lightgreen
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            width: 100%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar {
-            width: 200px;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            height: 100%;
-            overflow-y: auto;
-        }
-        .sidebar h2 {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            margin-bottom: 10px;
-        }
-        .sidebar ul li a {
-            text-decoration: none;
-            color: green;
-            display: block;
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-        .sidebar ul li a:hover {
-            background-color: lightgreen;
-            color: white;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-left: 220px; /* Adjusted for sidebar */
-            border-radius: 8px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-        .task-input {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .task-input input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .task-input button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: lightgreen;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .task-input button:hover {
-            background-color: lightgreen;
-        }
-        .task-list {
-            list-style: none;
-            padding: 0;
-        }
-        .task-list li {
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .task-list li .delete {
-            background-color: #ff3860;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .task-list li .delete:hover {
-            background-color: #e02745;
-        }
-        footer {
-            background-color: lightgreen;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
-            left: 220px; /* Adjusted for sidebar */
-            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Task List Application</h1>
-    </header>
-    <div class="sidebar">
-        <h2>Table of Contents</h2>
-        <ul>
-            <li><a href="#task-list">Task List</a></li>
-            <li><a href="#add-task">Add Task</a></li>
-        </ul>
-    </div>
-    <div class="container">
-        <h1 id="task-list">Task List</h1>
-        <div class="task-input" id="add-task">
-            <input type="text" id="task" placeholder="Add a new task">
-            <button onclick="addTask()">Add Task</button>
-        </div>
-        <ul class="task-list" id="task-list">
-            <!-- Tasks will be added here dynamically -->
-        </ul>
-    </div>
-    <footer>
-        <p>&copy; 2023 Task List Application</p>
-    </footer>
-    <script>
-        function addTask() {
-            const taskInput = document.getElementById('task');
-            const taskList = document.getElementById('task-list');
-            const taskText = taskInput.value.trim();
-
-            if (taskText !== '') {
-                const li = document.createElement('li');
-                li.innerHTML = `${taskText} <button class="delete" onclick="deleteTask(this)">Delete</button>`;
-                taskList.appendChild(li);
-                taskInput.value = '';
+.section {
+    background-color: azure;
+    }
+            .item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
-        }
-
-        function deleteTask(button) {
-            const li = button.parentElement;
-            li.remove();
-        }
+    </style>
+    </head>
+    <body>
+    @@ -25,15 +30,15 @@
+    
+    </a>
+    
+              <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+              <a :class="{ 'is-active': isOpen}" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" @click="toggleMenu">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+    </a>
+    </div>
+    
+            <div id="navbarBasicExample" class="navbar-menu">
+            <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isOpen}">
+    <div class="navbar-start">
+    <a class="navbar-item">
+    <i class="fas fa-home"></i>
+    @@ -100,56 +105,87 @@ <h1 class="title">
+    <div class="container">
+    <div class="columns">
+    <div class="column">
+                            <div class="notification is-success is-light">
+                                <button class="delete"></button>
+                                This is a primary notification #1
+                            </div>
+                            <div class="notification is-success is-light">
+                                <button class="delete"></button>
+                                This is a primary notification #2
+                            </div>
+                            <div class="notification is-success is-light">
+                                <button class="delete"></button>
+                                This is a primary notification #3
+                            </div>
+                            <div class="notification is-success is-light">
+                                <button class="delete"></button>
+                                This is a primary notification #4
+    
+    
+                            <div v-for="(message, index) in notifications" :key="index" class="notification is-success is-light">
+                                <button class="delete" @click="removeNotification(index)"></button>
+                                {{ message }}
+    </div>
+    
+                            
+    </div>
+    <div class="column">
+    <div class="notification is-warning is-light">
+    This is a warning notification
+    </div>
+                        </div>
+                        <div class="column">
+    <div class="notification is-danger is-light">
+    This is a danger notification
+    </div>
+    </div>
+    
+                        <div class="column">
+                          <h2 class="title">Items for sale</h2>
+                          <ul>
+                            <li v-for="item in items" :key="item.name" class="item">
+                              {{ item.name }} - ${{ item.price }}
+                              <button class="button is-primary" @click="addToCart(item)">Add to cart</button>
+                            </li>
+                          </ul>
+                          <h2 class="title">
+                            Your Cart
+                            {{ cart.length }} items 
+                            (${{ cart.reduce((acc, item) => acc + item.price * item.quantity, 0) }})
+                          </h2>
+                            <ul class="box">
+                                <li v-for="item in cart" :key="item.name">
+                                    {{ item.name }} - ${{ item.price }} x {{ item.quantity }} = ${{ item.price * item.quantity }}
+                                </li>
+                            </ul>
+                        </div>
+    
+    
+    </div>
+    </div>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+                <script src="https://unpkg.com/vue@3/dist/vue.global.js" ></script>
+    <script>
+                    $(document).ready(function() {
+                        $('.navbar-burger').click(function() {
+                            $('.navbar-burger').toggleClass('is-active'); 
+                            $('.navbar-menu').toggleClass('is-active');
+                        });
+    
+                        $('.delete').click(function() {
+                            $(this).closest('.notification').slideUp();
+                        });
+    
+                        $('.notification').click(function() {
+                                $(this).animate({
+                                opacity: 0.25,
+                                left: '50px',
+                                height: '50px',
+                                width: '50px'
+                            }, 5000);
+                        });
+                    });
+                  const { createApp, ref } = Vue;
+    
+                  const app = createApp({
+                    setup() {
+                      const notifications = ref([
+                        'This is a primary notification #1',
+                        'This is a primary notification #2',
+                        'This is a primary notification #3',
+                        'This is a primary notification #4',
+                      ]);
+    
+                      function removeNotification(index) {
+                        notifications.value.splice(index, 1);
+                      };
+    
+                      const isOpen = ref(false);
+                      function toggleMenu() {
+                        isOpen.value = !isOpen.value;
+                      }
+    
+                      const cart = ref([])
+                      const items = [
+                        { name: 'Apple', price: 1.25 },
+                        { name: 'Banana', price: 0.75 },
+                        { name: 'Cherry', price: 2.25 },
+                        { name: 'Date', price: 3.25 },
+                      ];
+                      
+                      function addToCart({ name, price}) {
+                        cart.value.push({name, price, quantity: 1});
+                      }
+    
+                      return { notifications, removeNotification, isOpen, toggleMenu, cart, addToCart, items };
+                    }
+                  });
+    
+                  app.mount('body');
+    
     </script>
-</body>
-</html>
+    </body>
+    </html>
