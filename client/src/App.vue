@@ -2,9 +2,6 @@
 
   // Add vue scripts here...
 
-  // Add bulma to this page using CDN. Should probably delete once Router gets involved
-
-
 </script>
 
 <template>
@@ -160,5 +157,4 @@
             </div> >
         </div>
     </div>
-
 </template>
