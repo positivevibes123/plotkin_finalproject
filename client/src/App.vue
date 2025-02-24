@@ -1,14 +1,17 @@
 <script>
-import Home from './components/Home.vue'
+import Home from './pages/Home.vue'
+import NavBar from './components/Navbar.vue';
 
 export default {
   name: 'App',
   components: {
-    Home
+    Home,
+    NavBar
   }
 }
 </script>
 
 <template>
-  <Home></Home>
+  <NavBar/>
+  <Home/>
 </template>
