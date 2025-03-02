@@ -4,7 +4,8 @@ type activityFormat = {
   name: string
   description: string
   date: string
-  time: string
+  duration: string
+  distance: string
   location: string
 }
 
@@ -12,16 +13,33 @@ type activityFormat = {
 const data = ref<activityFormat[]>([])
 
 const addActivity = () => {
+  const name = (<HTMLInputElement>document.getElementById("name")).value;
+  
   const activityObject = {
-    name: 'Activity Name',
+    name: name,
     description: 'Activity Description',
     date: 'Activity Date',
-    time: 'Activity Time',
+    duration:'Activity Duration',
+    distance: 'Activity Distance',
     location: 'Activity Location',
-  }
+  };
 
-  data.value.push(activityObject)
-  console.log(data.value[data.value.length - 1])
+  // Add the activity to the array of activities to be displayed
+  data.value.push(activityObject);
+  console.log(data.value[data.value.length - 1]);
+
+  // Hide the form after adding the activity
+  const formElement = document.getElementById('formElement');
+  if (formElement) {
+    formElement.style.display = 'none';
+  }
+}
+
+const showForm = () => {
+  const formElement = document.getElementById('formElement');
+  if (formElement) {
+    formElement.style.display = 'block';
+  }
 }
 </script>
 
@@ -30,8 +48,8 @@ const addActivity = () => {
     <h1 class="title">Friends Activity</h1>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
-        <button @click="addActivity" class="button is-info is-fullwidth">Add Activity</button>
-        <form>
+        <button @click="showForm" class="button is-info is-fullwidth">Add Activity</button>
+        <form id="formElement" onsubmit="return false" style="display: none;">
           <div class="modal is-active">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -60,21 +78,9 @@ const addActivity = () => {
                   <label class="label" for="picture">Picture</label>
                   <input type="text" class="input" id="picture" />
                 </div>
-                <div class="field">
-                  <label class="label" for="type">Type</label>
-                  <div class="select is-full-width">
-                    <select class="form-control" id="type">
-                      <option value="run">Run</option>
-                      <option value="bike">Bike</option>
-                      <option value="swim">Walk</option>
-                      <option value="cardio">Cardio</option>
-                      <option value="strength">Strength</option>
-                    </select>
-                  </div>
-                </div>
               </section>
               <footer class="modal-card-foot">
-                <button class="button is-success">Save changes</button>
+                <button @click="addActivity" class="button">Save changes</button>
                 <button class="button">Cancel</button>
               </footer>
             </div>
@@ -91,8 +97,6 @@ const addActivity = () => {
                     <strong>{{ item.name }}</strong>
                     <br />
                     {{ item.description }}
-                    <br />
-                    <small>{{ item.date }} at {{ item.time }}</small>
                     <br />
                     <small>{{ item.location }}</small>
                   </p>
