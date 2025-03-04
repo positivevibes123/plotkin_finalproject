@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
+const formActive = ref(false);
+
 type activityFormat = {
   name: string
   description: string
@@ -26,21 +29,20 @@ const addActivity = () => {
 
   // Add the activity to the array of activities to be displayed
   data.value.push(activityObject);
-  console.log(data.value[data.value.length - 1]);
 
   // Hide the form after adding the activity
-  const formElement = document.getElementById('formElement');
-  if (formElement) {
-    formElement.style.display = 'none';
-  }
+  formActive.value = false;
 }
 
-const showForm = () => {
-  const formElement = document.getElementById('formElement');
-  if (formElement) {
-    formElement.style.display = 'block';
-  }
+const resetForm = () => {
+  (document.getElementById("name") as HTMLInputElement).value = "";
+  (document.getElementById("date") as HTMLInputElement).value = "";
+  (document.getElementById("duration") as HTMLInputElement).value = ""; 
+  (document.getElementById("location") as HTMLInputElement).value = "";
+
+  formActive.value = false;
 }
+
 </script>
 
 <template>
@@ -48,14 +50,14 @@ const showForm = () => {
     <h1 class="title">Friends Activity</h1>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
-        <button @click="showForm" class="button is-info is-fullwidth">Add Activity</button>
-        <form id="formElement" onsubmit="return false" style="display: none;">
+        <button @click="formActive = !formActive" class="button is-info is-fullwidth">Add Activity</button>
+        <form id="formElement" onsubmit="return false" v-if="formActive">
           <div class="modal is-active">
             <div class="modal-background"></div>
             <div class="modal-card">
               <header class="modal-card-head">
                 <p class="modal-card-title">Add a Workout</p>
-                <button class="delete" aria-label="close"></button>
+                <button @click="resetForm" class="delete" aria-label="close"></button>
               </header>
               <section class="modal-card-body">
                 <div class="field">
@@ -73,15 +75,11 @@ const showForm = () => {
                 <div class="field">
                   <label class="label" for="location">Location</label>
                   <input type="text" class="input" id="location" />
-                </div>
-                <div class="field">
-                  <label class="label" for="picture">Picture</label>
-                  <input type="text" class="input" id="picture" />
-                </div>
+                </div>                
               </section>
               <footer class="modal-card-foot">
                 <button @click="addActivity" class="button">Save changes</button>
-                <button class="button">Cancel</button>
+                <button @click="resetForm" class="button">Cancel</button>
               </footer>
             </div>
           </div>
