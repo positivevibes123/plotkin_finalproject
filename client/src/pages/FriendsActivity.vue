@@ -94,8 +94,6 @@ const resetForm = () => {
                   <p>
                     <strong>{{ item.name }}</strong>
                     <br />
-                    {{ item.description }}
-                    <br />
                     <small>{{ item.location }}</small>
                     <br/>
                     <small>{{ item.date }}</small>
