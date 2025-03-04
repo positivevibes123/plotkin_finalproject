@@ -5,9 +5,8 @@ const formActive = ref(false);
 
 type activityFormat = {
   name: string
-  description: string
   date: string
-  duration: string
+  duration: number
   distance: string
   location: string
 }
@@ -17,14 +16,15 @@ const data = ref<activityFormat[]>([])
 
 const addActivity = () => {
   const name = (<HTMLInputElement>document.getElementById("name")).value;
+  const date = (<HTMLInputElement>document.getElementById("date")).value;
+  const location = (<HTMLInputElement>document.getElementById("location")).value;
   
   const activityObject = {
     name: name,
-    description: 'Activity Description',
-    date: 'Activity Date',
-    duration:'Activity Duration',
+    date: date,
+    duration: 0,
     distance: 'Activity Distance',
-    location: 'Activity Location',
+    location: location,
   };
 
   // Add the activity to the array of activities to be displayed
@@ -51,7 +51,7 @@ const resetForm = () => {
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
         <button @click="formActive = !formActive" class="button is-info is-fullwidth">Add Activity</button>
-        <form id="formElement" onsubmit="return false" v-if="formActive">
+        <form id="formElement" v-if="formActive">
           <div class="modal is-active">
             <div class="modal-background"></div>
             <div class="modal-card">
@@ -97,6 +97,8 @@ const resetForm = () => {
                     {{ item.description }}
                     <br />
                     <small>{{ item.location }}</small>
+                    <br/>
+                    <small>{{ item.date }}</small>
                   </p>
                 </div>
               </div>
