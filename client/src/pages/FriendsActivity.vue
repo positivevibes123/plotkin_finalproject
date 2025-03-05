@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+const getInitialForm = () => ({
+  name: '',
+  date: '',
+  duration: 0,
+  distance: 'Activity Distance',
+  location: '',
+})
+
+const formData = ref(getInitialForm())
+
 const formActive = ref(false);
 
 type activityFormat = {
@@ -12,7 +22,7 @@ type activityFormat = {
 }
 
 // We must definte a format here, because if ref sees the array is empty (no params) it assumes it should ALWAYS be empty
-const data = ref<activityFormat[]>([])
+const activities = ref<activityFormat[]>([])
 
 const addActivity = () => {
   const name = (<HTMLInputElement>document.getElementById("name")).value;
@@ -28,17 +38,17 @@ const addActivity = () => {
   };
 
   // Add the activity to the array of activities to be displayed
-  data.value.push(activityObject);
+  activities.value.push(activityObject);
 
-  // Hide the form after adding the activity
-  formActive.value = false;
+  resetForm();
+}
+
+const removeActivity = (index : number) => {
+  activities.value.splice(index, 1);
 }
 
 const resetForm = () => {
-  (document.getElementById("name") as HTMLInputElement).value = "";
-  (document.getElementById("date") as HTMLInputElement).value = "";
-  (document.getElementById("duration") as HTMLInputElement).value = ""; 
-  (document.getElementById("location") as HTMLInputElement).value = "";
+  formData.value = getInitialForm();
 
   formActive.value = false;
 }
@@ -62,20 +72,20 @@ const resetForm = () => {
               <section class="modal-card-body">
                 <div class="field">
                   <label class="label" for="name">Title</label>
-                  <input type="text" class="input" id="name" />
+                  <input type="text" class="input" id="name" v-model="formData.name" />
                 </div>
                 <div class="field">
                   <label class="label" for="date">Date</label>
-                  <input type="date" class="input" id="date" />
+                  <input type="date" class="input" id="date" v-model="formData.date" />
                 </div>
                 <div class="field">
                   <label class="label" for="duration">Duration</label>
-                  <input type="text" class="input" id="duration" />
+                  <input type="text" class="input" id="duration" v-model="formData.duration" />
                 </div>
                 <div class="field">
                   <label class="label" for="location">Location</label>
-                  <input type="text" class="input" id="location" />
-                </div>                
+                  <input type="text" class="input" id="location" v-model="formData.location" />
+                </div>
               </section>
               <footer class="modal-card-foot">
                 <button @click="addActivity" class="button">Save changes</button>
@@ -86,7 +96,7 @@ const resetForm = () => {
         </form>
 
         <br />
-        <li v-for="(item, index) in data">
+        <li v-for="(item, index) in activities">
           <div>
             <article class="media-box">
               <div class="media-content">
@@ -99,6 +109,9 @@ const resetForm = () => {
                     <small>{{ item.date }}</small>
                   </p>
                 </div>
+              </div>
+              <div class="media-right">
+                  <button class="delete" @click="removeActivity(index)"></button>
               </div>
             </article>
           </div>
