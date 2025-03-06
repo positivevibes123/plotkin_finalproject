@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { addActivity } from '@/models/users';
+import { removeActivity } from '@/models/users';
+import { refActivities } from '@/models/users';
 
 const getInitialForm = () => ({
   name: '',
@@ -8,6 +11,8 @@ const getInitialForm = () => ({
   distance: 'Activity Distance',
   location: '',
 })
+
+const activities = refActivities();
 
 const formData = ref(getInitialForm())
 
@@ -21,30 +26,10 @@ type activityFormat = {
   location: string
 }
 
-// We must definte a format here, because if ref sees the array is empty (no params) it assumes it should ALWAYS be empty
-const activities = ref<activityFormat[]>([])
-
-const addActivity = () => {
-  const name = (<HTMLInputElement>document.getElementById("name")).value;
-  const date = (<HTMLInputElement>document.getElementById("date")).value;
-  const location = (<HTMLInputElement>document.getElementById("location")).value;
-  
-  const activityObject = {
-    name: name,
-    date: date,
-    duration: 0,
-    distance: 'Activity Distance',
-    location: location,
-  };
-
-  // Add the activity to the array of activities to be displayed
-  activities.value.push(activityObject);
-
+// Wrapper function which calls the function to add an activity, and resets the form in this page
+const callAddActivity = () => {
+  addActivity();
   resetForm();
-}
-
-const removeActivity = (index : number) => {
-  activities.value.splice(index, 1);
 }
 
 const resetForm = () => {
@@ -88,7 +73,7 @@ const resetForm = () => {
                 </div>
               </section>
               <footer class="modal-card-foot">
-                <button @click="addActivity" class="button">Save changes</button>
+                <button @click="callAddActivity" class="button">Save changes</button>
                 <button @click="resetForm" class="button">Cancel</button>
               </footer>
             </div>
