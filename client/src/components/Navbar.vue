@@ -30,7 +30,7 @@ const isActive = ref(false);
               My Activity
             </a>
 
-            <router-link to="/friends-activity" class="navbar-item" tag="button">
+            <router-link to="/friendsactivity" class="navbar-item" tag="button">
               Friends Activity
             </router-link>
 
