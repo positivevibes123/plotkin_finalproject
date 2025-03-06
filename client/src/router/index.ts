@@ -1,15 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../pages/Home.vue'
-import FriendsActivity from '../pages/FriendsActivity.vue'
-
-const routes = [
-  { path: '/', component: Home },
-  { path: '/friends-activity', component: FriendsActivity },
-]
+import { routes, handleHotUpdate } from 'vue-router/auto-routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
+
+if (import.meta.hot) {
+  handleHotUpdate(router)
+}
 
 export default router
