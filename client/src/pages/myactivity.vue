@@ -18,17 +18,13 @@ const formData = ref(getInitialForm())
 
 const formActive = ref(false);
 
-type activityFormat = {
-  name: string
-  date: string
-  duration: number
-  distance: string
-  location: string
-}
-
 // Wrapper function which calls the function to add an activity, and resets the form in this page
 const callAddActivity = () => {
-  addActivity();
+  const desc = (<HTMLInputElement>document.getElementById("name")).value;
+  const date = (<HTMLInputElement>document.getElementById("date")).value;
+  const location = (<HTMLInputElement>document.getElementById("location")).value;
+  
+  addActivity(desc, date, location);
   resetForm();
 }
 
@@ -42,7 +38,7 @@ const resetForm = () => {
 
 <template>
   <div class="container">
-    <h1 class="title">Friends Activity</h1>
+    <h1 class="title">My Activity</h1>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
         <button @click="formActive = !formActive" class="button is-info is-fullwidth">Add Activity</button>
@@ -87,7 +83,7 @@ const resetForm = () => {
               <div class="media-content">
                 <div class="content">
                   <p>
-                    <strong>{{ item.name }}</strong>
+                    <strong>{{ item.description }}</strong>
                     <br />
                     <small>{{ item.location }}</small>
                     <br/>
