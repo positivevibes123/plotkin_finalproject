@@ -1,7 +1,9 @@
 import {ref} from 'vue'
 
+// Handling user activities (maybe move to a separate file...)
+
 type activityFormat = {
-    name: string
+    description: string
     date: string
     duration: number
     distance: string
@@ -15,21 +17,13 @@ type activityFormat = {
     return activities;
   }
 
-  /*export function refActivities() {
-    return activities
-  }*/
-
-  export function addActivity() {
-    const name = (<HTMLInputElement>document.getElementById("name")).value;
-    const date = (<HTMLInputElement>document.getElementById("date")).value;
-    const location = (<HTMLInputElement>document.getElementById("location")).value;
-    
+  export function addActivity(desc : string, date : string, loc : string) {
     const activityObject = {
-      name: name,
+      description: desc,
       date: date,
       duration: 0,
       distance: 'Activity Distance',
-      location: location,
+      location: loc,
     };
   
     // Add the activity to the array of activities to be displayed
@@ -39,3 +33,36 @@ type activityFormat = {
   export function removeActivity(index: number) {
     activities.value.splice(index, 1);
   }
+
+  // Handling users
+
+  type userFormat = {
+    userId: number
+    username: string
+    firstName: string
+    lastName: string
+    email: string
+    isAdmin: boolean
+  }
+
+  const users = ref<userFormat[]>([])
+  
+  // Add some generic users to the array
+  
+  users.value.push({
+    userId: 1,
+    username: 'rbcca',
+    firstName: 'Rebecca',
+    lastName: 'Workentheen',
+    email: 'rbcca@newpaltz.edu',
+    isAdmin: false
+  })
+
+  users.value.push({
+    userId: 2,
+    username: 'damor',
+    firstName: 'Daniel',
+    lastName: 'Amoruso',
+    email: 'damor@newpaltz.edu',
+    isAdmin: true
+  })
