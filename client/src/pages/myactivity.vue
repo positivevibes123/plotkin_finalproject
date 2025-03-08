@@ -8,15 +8,15 @@ const getInitialForm = () => ({
   name: '',
   date: '',
   duration: 0,
-  distance: 'Activity Distance',
+  distance: 0,
   location: '',
 })
 
-const activities = refActivities();
+const activities = refActivities()
 
 const formData = ref(getInitialForm())
 
-const formActive = ref(false);
+const formActive = ref(false)
 
 // Wrapper function which calls the function to add an activity, and resets the form in this page
 const callAddActivity = () => {
@@ -88,6 +88,17 @@ const resetForm = () => {
                     <small>{{ item.location }}</small>
                     <br/>
                     <small>{{ item.date }}</small>
+                    <br/>
+                    <div class="columns">
+                      <div class="column is-half">
+                        <h3 class="value">{{ item.duration }}</h3>
+                        <caption class="caption">Duration</caption>
+                      </div>
+                      <div class="column is-half">
+                        <h3 class="value">{{ item.distance + ' ft' }}</h3>
+                        <caption class="caption">Distance</caption>
+                      </div>
+                    </div>
                   </p>
                 </div>
               </div>

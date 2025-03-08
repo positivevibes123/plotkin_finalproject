@@ -78,7 +78,7 @@
             
             <div class="column is-invisible is-one-quarter">
                 <div class="box"></div>
-            </div> >
+            </div>
         </div>
     </div>
 
