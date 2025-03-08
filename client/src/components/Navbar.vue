@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { refUsers } from '@/models/users'
+import { refSignedInUserId } from '@/models/users'
+import { getUserById } from '@/models/users'
 
-const isActive = ref(false)
+const isBurgerActive = ref(false)
+const isLoginDropdownActive = ref(false)
+
+const users = refUsers()
+const signedInUserId = refSignedInUserId()
+
+const getNameUser = (userId: number) => {
+  const user = getUserById(userId)
+  return user?.firstName + ' ' + user?.lastName
+}
 </script>
 
 <template>
@@ -37,8 +49,8 @@ const isActive = ref(false)
         aria-label="menu"
         aria-expanded="false"
         data-target="navbarBasicExample"
-        :class="{ 'is-active': isActive }"
-        @click="isActive = !isActive"
+        :class="{ 'is-active': isBurgerActive }"
+        @click="isBurgerActive = !isBurgerActive"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -47,7 +59,7 @@ const isActive = ref(false)
       </a>
     </div>
 
-    <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isActive }">
+    <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isBurgerActive }">
       <div class="navbar-start">
         <router-link to="/myactivity" class="navbar-item"> My Activity </router-link>
 
@@ -70,24 +82,58 @@ const isActive = ref(false)
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons">
+          <div class="buttons" v-if="signedInUserId > 0">
+            <div class="avatar">
+              <strong>{{ getNameUser(signedInUserId) }}</strong>
+            </div>
+            <a class="button is-primary" @click="signedInUserId = 0">
+              <strong>Log Out</strong>
+            </a>
+          </div>
+          <div class="buttons" v-if="signedInUserId === 0">
             <a class="button is-primary">
               <strong>Sign up</strong>
             </a>
-            <div class="dropdown is-active" data-v-1f0da592="">
+            <div class="dropdown is-active">
               <div class="dropdown-trigger">
-                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <button
+                  class="button"
+                  aria-haspopup="true"
+                  aria-controls="dropdown-menu"
+                  @click="isLoginDropdownActive = !isLoginDropdownActive"
+                >
                   <span>Log in</span>
                   <span class="icon is-small">
                     <i class="fas fa-angle-down" aria-hidden="true"></i>
                   </span>
                 </button>
               </div>
-              <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content"></div>
+              <div
+                class="dropdown-menu"
+                id="dropdown-menu"
+                role="menu"
+                v-show="isLoginDropdownActive"
+              >
+                <div class="dropdown-content">
+                  <li v-for="(user, index) in users" :key="index">
+                    <a class="dropdown-item" @click="signedInUserId = user.userId">{{
+                      getNameUser(user.userId)
+                    }}</a>
+                  </li>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+        <div class="navbar-item">
+          <a
+            class="bd-tw-button button"
+            data-social-network="Twitter"
+            data-social-action="tweet"
+            data-social-target="https://bulma.io"
+            target="_blank"
+            href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms"
+            ><span class="icon"><i class="fab fa-twitter"></i></span><span> Tweet </span></a>
         </div>
       </div>
     </div>

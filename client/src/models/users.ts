@@ -6,7 +6,7 @@ type activityFormat = {
     description: string
     date: string
     duration: number
-    distance: string
+    distance: number
     location: string
   }
   
@@ -22,7 +22,7 @@ type activityFormat = {
       description: desc,
       date: date,
       duration: 0,
-      distance: 'Activity Distance',
+      distance: 0,
       location: loc,
     };
   
@@ -46,6 +46,20 @@ type activityFormat = {
   }
 
   const users = ref<userFormat[]>([])
+
+  export function refUsers() {
+    return users;
+  }
+
+  export function getUserById(id: number) {
+    return users.value.find(user => user.userId === id);
+  }
+
+  const signedInUserId = ref(0);
+
+  export function refSignedInUserId() {
+    return signedInUserId;
+  }
   
   // Add some generic users to the array
   
@@ -60,6 +74,15 @@ type activityFormat = {
 
   users.value.push({
     userId: 2,
+    username: 'inunez',
+    firstName: 'Ivan',
+    lastName: 'Noonez',
+    email: 'ivan@newpaltz.edu',
+    isAdmin: false
+  })
+
+  users.value.push({
+    userId: 3,
     username: 'damor',
     firstName: 'Daniel',
     lastName: 'Amoruso',
