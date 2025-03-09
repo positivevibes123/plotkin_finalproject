@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { addActivity } from '@/models/users';
+import { addActivity, getUserById } from '@/models/users';
 import { removeActivity } from '@/models/users';
-import { refActivities } from '@/models/users';
+import { refSignedInUserId } from '@/models/users';
+import { getActivitiesByUserId } from '@/models/users';
+import { getFullName } from '@/models/users';
 
 const getInitialForm = () => ({
   name: '',
@@ -12,19 +14,15 @@ const getInitialForm = () => ({
   location: '',
 })
 
-const activities = refActivities()
-
 const formData = ref(getInitialForm())
 
 const formActive = ref(false)
 
+const signedInUserId = refSignedInUserId()
+
 // Wrapper function which calls the function to add an activity, and resets the form in this page
 const callAddActivity = () => {
-  const desc = (<HTMLInputElement>document.getElementById("name")).value;
-  const date = (<HTMLInputElement>document.getElementById("date")).value;
-  const location = (<HTMLInputElement>document.getElementById("location")).value;
-  
-  addActivity(desc, date, location);
+  addActivity(signedInUserId.value, formData.value.name, formData.value.date, formData.value.duration, formData.value.distance, formData.value.location);
   resetForm();
 }
 
@@ -37,7 +35,11 @@ const resetForm = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="signedInUserId === 0">
+    <h1 class="title">Login</h1>
+    <h2 class="subtitle">Please select a user to login</h2>
+  </div>
+  <div class="container" v-if = "signedInUserId > 0">
     <h1 class="title">My Activity</h1>
     <div class="columns">
       <div class="column is-half is-offset-one-quarter">
@@ -64,6 +66,10 @@ const resetForm = () => {
                   <input type="text" class="input" id="duration" v-model="formData.duration" />
                 </div>
                 <div class="field">
+                  <label class="label" for="distance">Distance</label>
+                  <input type="text" class="input" id="distance" v-model="formData.distance" />
+                </div>
+                <div class="field">
                   <label class="label" for="location">Location</label>
                   <input type="text" class="input" id="location" v-model="formData.location" />
                 </div>
@@ -77,12 +83,14 @@ const resetForm = () => {
         </form>
 
         <br />
-        <li v-for="(item, index) in activities">
+        <li v-for="(item, index) in getActivitiesByUserId(signedInUserId)" :key="index">
           <div>
             <article class="media-box">
               <div class="media-content">
                 <div class="content">
                   <p>
+                    <strong> {{ getFullName(item.userId) }}</strong>
+                    <br />
                     <strong>{{ item.description }}</strong>
                     <br />
                     <small>{{ item.location }}</small>

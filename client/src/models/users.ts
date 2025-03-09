@@ -3,6 +3,7 @@ import {ref} from 'vue'
 // Handling user activities (maybe move to a separate file...)
 
 type activityFormat = {
+    userId: number,
     description: string
     date: string
     duration: number
@@ -17,12 +18,13 @@ type activityFormat = {
     return activities;
   }
 
-  export function addActivity(desc : string, date : string, loc : string) {
+  export function addActivity(userId : number, desc : string, date : string, duration: number, distance: number, loc : string) {
     const activityObject = {
+      userId: userId,
       description: desc,
       date: date,
-      duration: 0,
-      distance: 0,
+      duration: duration,
+      distance: distance,
       location: loc,
     };
   
@@ -32,6 +34,14 @@ type activityFormat = {
 
   export function removeActivity(index: number) {
     activities.value.splice(index, 1);
+  }
+
+  export function getActivitiesByUserId(userId: number) {
+    return activities.value.filter(activity => activity.userId === userId);
+  }
+
+  export function getActivitiesExcludingUserId(userId: number) {
+    return activities.value.filter(activity => activity.userId !== userId);
   }
 
   // Handling users
@@ -51,14 +61,46 @@ type activityFormat = {
     return users;
   }
 
+  export function addUser(username: string, firstName: string, lastName: string, email: string, isAdmin: boolean) {
+    const userObject = {
+      userId: users.value.length + 1,
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      isAdmin: isAdmin
+    };
+
+    // Add the user to the array of users
+    users.value.push(userObject);
+  }
+  
+  export function removeUser(userId: number) {
+    const index = users.value.findIndex(user => user.userId === userId);
+    users.value.splice(index, 1);
+  }
+
   export function getUserById(id: number) {
     return users.value.find(user => user.userId === id);
+  }
+
+  export function getFullName(userId: number) {
+    const user = getUserById(userId);
+    return user ? `${user.firstName} ${user.lastName}` : '';
+  }
+
+  export function getUsersExcludingUserId(userId: number) {
+    return users.value.filter(user => user.userId !== userId);
   }
 
   const signedInUserId = ref(0);
 
   export function refSignedInUserId() {
     return signedInUserId;
+  }
+
+  export function isSignedInUserAdmin() {
+    return getUserById(signedInUserId.value)?.isAdmin;
   }
   
   // Add some generic users to the array
