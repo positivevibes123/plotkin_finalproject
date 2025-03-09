@@ -63,7 +63,7 @@ const getNameUser = (userId: number) => {
       <div class="navbar-start">
         <router-link to="/myactivity" class="navbar-item"> My Activity </router-link>
 
-        <router-link to="/" class="navbar-item" tag="button"> Friends Activity </router-link>
+        <router-link to="/friendsactivity" class="navbar-item" tag="button"> Friends Activity </router-link>
 
         <a class="navbar-item"> People Search </a>
 
@@ -71,11 +71,7 @@ const getNameUser = (userId: number) => {
           <a class="navbar-link"> Admin </a>
 
           <div class="navbar-dropdown">
-            <a class="navbar-item"> About </a>
-            <a class="navbar-item is-selected"> Jobs </a>
-            <a class="navbar-item"> Contact </a>
-            <hr class="navbar-divider" />
-            <a class="navbar-item"> Report an issue </a>
+            <router-link to="/admin" class="navbar-item"> Users </router-link>
           </div>
         </div>
       </div>
