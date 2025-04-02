@@ -1,4 +1,5 @@
 const express = require('express')
+const usersController = require('./controllers/users')
 const e = require('express');
 
 const PORT = 8000
@@ -13,6 +14,7 @@ app
   .get('/', (req, res) => {
     res.send('Hello New Paltz, NY!!!')
   })
+  .use('/api/v1/users', usersController)
 
 //error handling middleware
 app.use((err, req, res, next) => {

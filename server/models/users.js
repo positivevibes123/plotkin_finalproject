@@ -1,11 +1,11 @@
 const data = require('../data/users.json')
 
 async function getAll() {
-  return data
+  return data.users
 }
 
 async function get(id) {
-  const user = data.find((user) => user.id === id)
+  const user = data.users.find((user) => user.id === id)
   if (!user) {
     throw new Error(`User with id ${id} not found`)
   }
@@ -13,29 +13,29 @@ async function get(id) {
 }
 
 async function create(user) {
-  const newUser = { id: data.length + 1, ...user }
-  data.push(newUser)
+  const newUser = { id: data.users.length + 1, ...user }
+  data.users.push(newUser)
   return newUser
 }
 
 async function update(id, user) {
-  const index = data.findIndex((user) => user.id === id)
+  const index = data.users.findIndex((user) => user.id === id)
   if (index === -1) {
     throw new Error(`User with id ${id} not found`)
   }
 
   const updatedUser = { ...data[index], ...user }
-  data[index] = updatedUser
-  return data[index]
+  data.users[index] = updatedUser
+  return data.users[index]
 }
 
 async function remove(id) {
-  const index = data.findIndex((user) => user.id === id)
+  const index = data.users.findIndex((user) => user.id === id)
   if (index === -1) {
     throw new Error(`User with id ${id} not found`)
   }
 
-  const deletedUser = data.splice(index, 1)
+  const deletedUser = data.users.splice(index, 1)
   return deletedUser[0]
 }
 
