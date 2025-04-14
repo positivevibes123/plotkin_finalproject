@@ -1,4 +1,8 @@
 const data = require('../data/users.json')
+const { CustomError, statusCodes } = require('./errors')
+const { connect } = require('./supabase')
+
+const TABLE_NAME = 'users'
 
 async function getAll() {
   return data.users
