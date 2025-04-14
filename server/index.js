@@ -1,10 +1,11 @@
 const express = require('express')
 const usersController = require('./controllers/users')
-const e = require('express');
+const e = require('express')
+require('dotenv').config()
 
-const PORT = 8000
+const PORT = process.env.PORT ?? 8000
 
-const app = express();
+const app = express()
 
 // Middleware
 app.use(express.json()) // Parse JSON request body
