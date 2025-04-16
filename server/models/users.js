@@ -1,46 +1,89 @@
-const data = require('../data/users.json')
-const { CustomError, statusCodes } = require('./errors')
-const { connect } = require('./supabase')
+const data = require("../data/users.json");
+const { CustomError, statusCodes } = require("./errors");
+const { connect } = require("./supabase");
 
-const TABLE_NAME = 'users'
+const TABLE_NAME = "users";
+const isAdmin = true;
 
 async function getAll() {
-  return data.users
+  const list = await connect().from(TABLE_NAME).select("*");
+  if (list.error) {
+    throw error;
+  }
+  return {
+    data: list.data,
+    count: list.count,
+  };
 }
 
 async function get(id) {
-  const user = data.users.find((user) => user.id === id)
-  if (!user) {
-    throw new Error(`User with id ${id} not found`)
+  const { data: user, error } = await connect()
+    .from(TABLE_NAME)
+    .select("*")
+    .eq("id", id);
+  if (!user.length) {
+    throw new CustomError("User not found", statusCodes.NOT_FOUND);
   }
-  return user
+
+  if (error) {
+    throw error;
+  }
+
+  return user;
 }
 
 async function create(user) {
-  const newUser = { id: data.users.length + 1, ...user }
-  data.users.push(newUser)
-  return newUser
+  if (!isAdmin) {
+    throw CustomError(
+      "Sorry, you are not authorized to create a new user",
+      statusCodes.UNAUTHORIZED
+    );
+  }
+
+  const { data: newUser, error } = await connect()
+    .from(TABLE_NAME)
+    .insert(user)
+    .select("*");
+  if (error) {
+    throw error;
+  }
+  return newUser;
 }
 
 async function update(id, user) {
-  const index = data.users.findIndex((user) => user.id === id)
-  if (index === -1) {
-    throw new Error(`User with id ${id} not found`)
+  if (!isAdmin) {
+    throw CustomError(
+      "Sorry, you are not authorized to update this user",
+      statusCodes.UNAUTHORIZED
+    );
   }
 
-  const updatedUser = { ...data[index], ...user }
-  data.users[index] = updatedUser
-  return data.users[index]
+  const { data: updatedUser, error } = await connect()
+    .from(TABLE_NAME)
+    .update(user)
+    .eq("id", id)
+    .select("*");
+  if (error) {
+    throw error;
+  }
+  return updatedUser;
 }
 
 async function remove(id) {
-  const index = data.users.findIndex((user) => user.id === id)
-  if (index === -1) {
-    throw new Error(`User with id ${id} not found`)
+  if (!isAdmin) {
+    throw CustomError(
+      "Sorry, you are not authorized to delete this user",
+      statusCodes.UNAUTHORIZED
+    );
   }
-
-  const deletedUser = data.users.splice(index, 1)
-  return deletedUser[0]
+  const { data: deletedUser, error } = await connect()
+    .from(TABLE_NAME)
+    .delete()
+    .eq("id", id);
+  if (error) {
+    throw error;
+  }
+  return deletedUser;
 }
 
 module.exports = {
@@ -49,4 +92,4 @@ module.exports = {
   create,
   update,
   remove,
-}
+};
