@@ -1,6 +1,6 @@
 const express = require('express')
+const cors = require('cors')
 const usersController = require('./controllers/users')
-const e = require('express')
 require('dotenv').config()
 
 const PORT = process.env.PORT ?? 8000
@@ -10,6 +10,9 @@ const app = express()
 // Middleware
 app.use(express.json()) // Parse JSON request body
 //controller middleware
+
+// enabling CORS for any unknown origin(https://xyz.example.com)
+app.use(cors());
 
 app
   .get('/', (req, res) => {
