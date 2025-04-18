@@ -1,4 +1,3 @@
-const data = require("../data/users.json");
 const { CustomError, statusCodes } = require("./errors");
 const { connect } = require("./supabase");
 
@@ -20,7 +19,7 @@ async function get(id) {
   const { data: user, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("id", id);
+    .eq("userId", id);
   if (!user.length) {
     throw new CustomError("User not found", statusCodes.NOT_FOUND);
   }
@@ -61,7 +60,7 @@ async function update(id, user) {
   const { data: updatedUser, error } = await connect()
     .from(TABLE_NAME)
     .update(user)
-    .eq("id", id)
+    .eq("userId", id)
     .select("*");
   if (error) {
     throw error;
@@ -79,7 +78,7 @@ async function remove(id) {
   const { data: deletedUser, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("id", id);
+    .eq("userId", id);
   if (error) {
     throw error;
   }
