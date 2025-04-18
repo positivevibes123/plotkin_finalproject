@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const usersController = require('./controllers/users')
+const activitiesController = require('./controllers/activities')
 require('dotenv').config()
 
 const PORT = process.env.PORT ?? 8000
@@ -19,6 +20,7 @@ app
     res.send('Hello New Paltz, NY!!!')
   })
   .use('/api/v1/users', usersController)
+  .use('/api/v1/activities', activitiesController)
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
