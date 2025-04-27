@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { addUser } from "../models/users"
 import type { User } from "../models/users"
+import { login } from "../models/session"
 
 const firstName = ref('')
 const lastName = ref('')
@@ -11,10 +12,6 @@ const email = ref('')
 const isAdmin = ref(false)
 
 function handleSubmit() {
-  console.log("Submitting register form...")
-  console.log(username.value)
-  console.log(password.value)
-
   let user: User = {
     firstname: firstName.value,
     lastname: lastName.value,
@@ -25,8 +22,9 @@ function handleSubmit() {
   }
 
   addUser(user).then((response) => {
-    console.log("User added successfully")
-    console.log(response.data)
+    const addedUser = (response.data as unknown as Array<any>)[0];
+    console.log("Success! ID of user signed up: " + JSON.stringify(addedUser.userid))
+    login(addedUser.userid) 
   }).catch((error) => {
     console.error("Error adding user:", error)
   })
