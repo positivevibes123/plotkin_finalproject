@@ -12,7 +12,7 @@ export interface User {
 }
 
 export interface UserResponse extends Omit<User, 'password'> {
-    userid: number
+    userId: number
 }
 
 export async function addUser(user: Omit<User, 'id'>): Promise<DataEnvelope<UserResponse>> {
