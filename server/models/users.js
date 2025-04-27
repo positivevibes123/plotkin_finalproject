@@ -32,21 +32,14 @@ async function get(id) {
 }
 
 async function create(user) {
-  if (!isAdmin) {
-    throw CustomError(
-      "Sorry, you are not authorized to create a new user",
-      statusCodes.UNAUTHORIZED
-    );
-  }
-
-  const { data: newUser, error } = await connect()
-    .from(TABLE_NAME)
-    .insert(user)
-    .select("*");
-  if (error) {
-    throw error;
-  }
-  return newUser;
+  if(!isAdmin){
+    throw CustomError("Sorry, you are not authorized to create a new item", statusCodes.UNAUTHORIZED)
+}
+const { data: newUser, error } = await connect().from(TABLE_NAME).insert(user).select('*')
+if (error) {
+    throw error
+}
+return newUser
 }
 
 async function update(id, user) {

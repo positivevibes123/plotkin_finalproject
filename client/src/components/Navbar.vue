@@ -1,19 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { refUsers } from '@/models/users'
-import { refSignedInUserId } from '@/models/users'
-import { getUserById } from '@/models/users'
+//import { refUsers } from '@/models/users'
+//import { refSignedInUserId } from '@/models/users'
+//import { getUserById } from '@/models/users'
 
 const isBurgerActive = ref(false)
 const isLoginDropdownActive = ref(false)
 
-const users = refUsers()
+/*const users = refUsers()
 const signedInUserId = refSignedInUserId()
 
 const getNameUser = (userId: number) => {
   const user = getUserById(userId)
   return user?.firstName + ' ' + user?.lastName
-}
+}*/
+
+// Temporary just so entire page doesn't break
+const signedInUserId = ref(0)
 </script>
 
 <template>
@@ -87,9 +90,9 @@ const getNameUser = (userId: number) => {
             </a>
           </div>
           <div class="buttons" v-if="signedInUserId === 0">
-            <a class="button is-primary">
+            <router-link to="/signup" class="navbar-item">
               <strong>Sign up</strong>
-            </a>
+            </router-link>
             <div class="dropdown is-active">
               <div class="dropdown-trigger">
                 <button
