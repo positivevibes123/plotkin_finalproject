@@ -22,7 +22,12 @@ router
         const newValues = req.body
 
         model.create(newValues).then((data) => {
-            res.status(201).send(data)
+            //res.status(201).send(data)
+            res.status(201).json({
+                data: data,
+                message: 'User created successfully',
+                isSuccess: true
+            })
         }).catch(next)
 
     })
