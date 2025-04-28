@@ -24,7 +24,11 @@ function handleSubmit() {
   addUser(user).then((response) => {
     const addedUser = (response.data as unknown as Array<any>)[0];
     console.log("Success! ID of user signed up: " + JSON.stringify(addedUser.userid))
+
+
     login(addedUser.userid) 
+
+    
   }).catch((error) => {
     console.error("Error adding user:", error)
   })

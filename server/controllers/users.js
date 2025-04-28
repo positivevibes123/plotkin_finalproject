@@ -14,7 +14,12 @@ router
         const { id } = req.params
 
         model.get(id).then((data) => {
-            res.send(data)
+            //res.send(data)
+            res.send(201).json({
+                data: data,
+                message: 'User found successfully',
+                isSuccess: true
+            })   
         }).catch(next)
 
     })
