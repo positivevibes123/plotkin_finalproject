@@ -43,14 +43,19 @@ export async function rest<T>(url: string, data?: any, method?: string): Promise
   const session = refSession()
   
   try {
-    const response = await fetch(url, {
+    const params : RequestInit = {
       method: method ?? (data ? 'POST' : 'GET'),
       headers: {
         'Content-Type': 'application/json',
         Authorization: session.value.token ? `Bearer ${session.value.token}` : ''
-      },
-      body: data ? JSON.stringify(data) : undefined
-    });
+      }
+    }
+    
+    if (method === 'POST' || method === 'PUT') {
+      params.body = data ? JSON.stringify(data) : undefined
+    }
+    
+    const response = await fetch(url, params)
 
     if (!response.ok) {
       let errorMessage: string

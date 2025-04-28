@@ -27,7 +27,13 @@ export function getAll(): Promise<DataListEnvelope<User>> {
     return api('users')
 }
 
-export function get(id: number): Promise<User> {
-    return api(`users/${id}`)
-}
+export async function get(id: number) : Promise<DataEnvelope<User>> {
+    const response = await api<DataEnvelope<User>>(`users/${id}`, undefined, 'GET')
+  
+    if (!response.isSuccess) {
+      throw new Error(`Failed to login user: ${response.message}`)
+    }
+
+    return response
+  }
   
