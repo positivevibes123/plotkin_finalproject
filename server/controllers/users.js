@@ -10,6 +10,24 @@ router
         }).catch(next)
 
     })
+
+    .get('/search/:loginData', (req, res, next) => { 
+       const loginData = req.params
+
+       model.getByLogin(loginData).then((data) => {
+        
+         // Make sure not to send password to client - sensitive information
+            
+         const safeUser = {...data[0], password: undefined}
+         data[0] = safeUser
+
+         res.status(201).json({
+             data: data,
+             message: 'User found successfully',
+             isSuccess: true
+         })   
+       })
+    })
     .get('/:id', (req, res, next) => {
         const { id } = req.params
 

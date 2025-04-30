@@ -31,6 +31,17 @@ async function get(id) {
   return user;
 }
 
+async function getByLogin(loginData) {
+  const {data: user, error} = await connect()
+    .from(TABLE_NAME)
+    .select("*")
+    .eq("username", loginData.username)
+    .eq("password", loginData.password)
+  if (!user.length) {
+    throw new CustomError("User not found", statusCodes.NOT_FOUND);
+  }
+}
+
 async function create(user) {
   if(!isAdmin){
     throw CustomError("Sorry, you are not authorized to create a new item", statusCodes.UNAUTHORIZED)
@@ -81,6 +92,7 @@ async function remove(id) {
 module.exports = {
   getAll,
   get,
+  getByLogin,
   create,
   update,
   remove,

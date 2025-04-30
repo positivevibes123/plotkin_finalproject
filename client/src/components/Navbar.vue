@@ -93,35 +93,10 @@ const signedInUserId = ref(0)
             <router-link to="/signup" class="navbar-item">
               <strong>Sign up</strong>
             </router-link>
-            <div class="dropdown is-active">
-              <div class="dropdown-trigger">
-                <button
-                  class="button"
-                  aria-haspopup="true"
-                  aria-controls="dropdown-menu"
-                  @click="isLoginDropdownActive = !isLoginDropdownActive"
-                >
-                  <span>Log in</span>
-                  <span class="icon is-small">
-                    <i class="fas fa-angle-down" aria-hidden="true"></i>
-                  </span>
-                </button>
-              </div>
-              <div
-                class="dropdown-menu"
-                id="dropdown-menu"
-                role="menu"
-                v-show="isLoginDropdownActive"
-              >
-                <div class="dropdown-content">
-                  <li v-for="(user, index) in users" :key="index">
-                    <a class="dropdown-item" @click="signedInUserId = user.userId">{{
-                      getNameUser(user.userId)
-                    }}</a>
-                  </li>
-                </div>
-              </div>
-            </div>
+
+            <router-link to="/login" class="navbar-item">
+              <strong>Log in</strong>
+            </router-link>
           </div>
         </div>
         <div class="navbar-item">

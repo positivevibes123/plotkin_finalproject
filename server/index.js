@@ -2,9 +2,9 @@ const express = require('express')
 const cors = require('cors')
 const usersController = require('./controllers/users')
 const activitiesController = require('./controllers/activities')
-require('dotenv').config()
 
 const PORT = process.env.PORT ?? 8000
+require('dotenv').config()
 
 const app = express()
 
