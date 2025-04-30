@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { addUser } from "../models/users"
 import type { User } from "../models/users"
-import { getByLogin } from "../models/users"
+import { loginWithCredentials } from '../models/session'
 
 const username = ref('')
 const password = ref('')
@@ -13,11 +13,7 @@ function handleSubmit() {
         password: password.value
     }
 
-    getByLogin(loginData).then((response) => {
-        
-    }).catch((error) => {
-        console.error("Error logging in user:", error)
-    })
+    loginWithCredentials(loginData.username, loginData.password)
 }
 
 </script>

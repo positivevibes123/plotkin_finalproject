@@ -11,11 +11,6 @@ export interface User {
     isadmin: boolean
 }
 
-export interface LoginData {
-    username: string,
-    password: string
-}
-
 export interface UserResponse extends Omit<User, 'password'> {
     userId: number
 }
@@ -42,8 +37,8 @@ export async function get(id: number) : Promise<DataEnvelope<User>> {
     return response
   }
 
-  export async function getByLogin(loginData: LoginData) : Promise<DataEnvelope<User>> {
-    const response = await api<DataEnvelope<User>>(`users/search/${loginData}`, undefined, 'GET')
+  export async function login(username: string, password: string) : Promise<DataEnvelope<User>> {
+    const response = await api<DataEnvelope<User>>(`users/login`, {username, password}, 'POST')
   
     if (!response.isSuccess) {
       throw new Error(`Failed to login user: ${response.message}`)

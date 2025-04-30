@@ -11,10 +11,10 @@ router
 
     })
 
-    .get('/search/:loginData', (req, res, next) => { 
-       const loginData = req.params
+    .post('/login', (req, res, next) => { 
+       const loginData = req.body
 
-       model.getByLogin(loginData).then((data) => {
+       model.login(loginData).then((data) => {
         
          // Make sure not to send password to client - sensitive information
             
