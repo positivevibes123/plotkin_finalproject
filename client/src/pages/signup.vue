@@ -23,8 +23,8 @@ function handleSubmit() {
 
   addUser(user).then((response) => {
     const addedUser = (response.data as unknown as Array<any>)[0];
-    console.log("Success! ID of user signed up: " + JSON.stringify(addedUser.userid))
 
+    console.log("User added:", addedUser)
 
     login(addedUser.userid) 
 

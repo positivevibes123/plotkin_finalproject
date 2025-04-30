@@ -27,8 +27,9 @@ export const isLoggedIn = () => session.value?.user !== null
 
 export function login(id: number) {
   get(id).then((user) => {
-    console.log('Retrieved user from login:', user.data)
-    session.value.user = user.data
+    const retrievedUser = (user.data as unknown as Array<any>)[0]
+    console.log('User logged in:', retrievedUser.userid)
+    session.value.user = retrievedUser
   })
 }
 export function logout() {
