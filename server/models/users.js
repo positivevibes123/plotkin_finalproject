@@ -31,7 +31,7 @@ async function get(id) {
   return user;
 }
 
-async function getByLogin(loginData) {
+async function login(loginData) {
   const {data: user, error} = await connect()
     .from(TABLE_NAME)
     .select("*")
@@ -40,6 +40,12 @@ async function getByLogin(loginData) {
   if (!user.length) {
     throw new CustomError("User not found", statusCodes.NOT_FOUND);
   }
+
+  if (error) {
+    throw error;
+  }
+
+  return user;
 }
 
 async function create(user) {
@@ -92,7 +98,7 @@ async function remove(id) {
 module.exports = {
   getAll,
   get,
-  getByLogin,
+  login,
   create,
   update,
   remove,

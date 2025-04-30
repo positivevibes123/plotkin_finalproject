@@ -1,27 +1,18 @@
 const express = require('express')
-const cors = require('cors')
 const usersController = require('./controllers/users')
 const activitiesController = require('./controllers/activities')
+const cors = require('cors')
 
 const PORT = process.env.PORT ?? 8000
 require('dotenv').config()
 
 const app = express()
 
-// Middleware
-app.use(express.json()) // Parse JSON request body
-//controller middleware
-
-// enabling CORS for any unknown origin(https://xyz.example.com)
+// Enable CORS for all routes
 app.use(cors());
 
-app
-  .get('/', (req, res) => {
-    res.send('Hello New Paltz, NY!!!')
-  })
-  .use('/api/v1/users', usersController)
-  .use('/api/v1/activities', activitiesController)
-
+// Middleware
+// CORS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
@@ -31,7 +22,16 @@ app.use((req, res, next) => {
   }
   next()
 })
-app.use('/', express.static('dist')) 
+  app.use(express.json())
+
+app
+  .get('/', (req, res) => {
+    res.send('Hello New Paltz, NY!!!')
+  })
+  .use('/api/v1/users', usersController)
+  .use('/api/v1/activities', activitiesController)
+
+  .use('/', express.static('dist')) 
 
 //error handling middleware
 app.use((err, req, res, next) => {

@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { addUser } from "../models/users"
 import type { User } from "../models/users"
-import { login } from "../models/session"
+import { loginWithID } from "../models/session"
 
 const firstName = ref('')
 const lastName = ref('')
@@ -26,7 +26,7 @@ function handleSubmit() {
 
     console.log("User added:", addedUser)
 
-    login(addedUser.userid) 
+    loginWithID(addedUser.userid) 
 
     
   }).catch((error) => {
