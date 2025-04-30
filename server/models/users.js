@@ -19,7 +19,7 @@ async function get(id) {
   const { data: user, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("userId", id);
+    .eq("userid", id);
   if (!user.length) {
     throw new CustomError("User not found", statusCodes.NOT_FOUND);
   }

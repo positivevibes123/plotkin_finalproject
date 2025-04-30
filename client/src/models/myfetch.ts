@@ -76,6 +76,7 @@ export async function rest<T>(url: string, data?: any, method?: string): Promise
     }
 
     const responseData = await response.json()
+    console.log('Response data:', responseData)
 
     if (responseData && !responseData.isSuccess) {
       throw new APIError(responseData.message || 'Operation failed', response.status)

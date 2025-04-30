@@ -14,8 +14,13 @@ router
         const { id } = req.params
 
         model.get(id).then((data) => {
-            //res.send(data)
-            res.send(201).json({
+
+            // Make sure not to send password to client - sensitive information
+            
+            const safeUser = {...data[0], password: undefined}
+            data[0] = safeUser
+
+            res.status(201).json({
                 data: data,
                 message: 'User found successfully',
                 isSuccess: true
@@ -27,7 +32,12 @@ router
         const newValues = req.body
 
         model.create(newValues).then((data) => {
-            //res.status(201).send(data)
+        
+        // Make sure not to send password to client - sensitive information
+
+        const safeUser = {...data[0], password: undefined}
+        data[0] = safeUser
+
             res.status(201).json({
                 data: data,
                 message: 'User created successfully',
