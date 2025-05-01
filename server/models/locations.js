@@ -1,12 +1,12 @@
 const { CustomError, statusCodes } = require("./errors");
 const { connect } = require("./supabase");
 
-const TABLE_NAME = "activities";
+const TABLE_NAME = "location";
 
 async function getAll() {
   const list = await connect().from(TABLE_NAME).select("*");
   if (list.error) {
-    throw error;
+    throw list.error;
   }
   return {
     data: list.data,
@@ -15,7 +15,7 @@ async function getAll() {
 }
 
 async function getByUserId(userId) {
-  const { data: activities, error } = await connect()
+  const { data: locations, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
     .eq("userId", userId);
@@ -24,57 +24,57 @@ async function getByUserId(userId) {
     throw error;
   }
   
-  return activities;
+  return locations;
 }
 
 async function get(id) {
-  const { data: activity, error } = await connect()
+  const { data: location, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("activityId", id);
-  if (!activity.length) {
-    throw new CustomError("User not found", statusCodes.NOT_FOUND);
+    .eq("locationId", id);
+  if (!location.length) {
+    throw new CustomError("Location not found", statusCodes.NOT_FOUND);
   }
 
   if (error) {
     throw error;
   }
 
-  return activity;
+  return location;
 }
 
-async function create(activity) {
-  const { data: newActivity, error } = await connect()
+async function create(location) {
+  const { data: newLocation, error } = await connect()
     .from(TABLE_NAME)
-    .insert(activity)
+    .insert(location)
     .select("*");
   if (error) {
     throw error;
   }
-  return newActivity;
+  return newLocation;
 }
 
-async function update(id, activity) {
-  const { data: updatedActivity, error } = await connect()
+async function update(id, location) {
+  const { data: updatedLocation, error } = await connect()
     .from(TABLE_NAME)
-    .update(activity)
-    .eq("activityId", id)
+    .update(location)
+    .eq("locationId", id)
     .select("*");
   if (error) {
     throw error;
   }
-  return updatedActivity;
+  return updatedLocation;
 }
 
 async function remove(id) {
-  const { data: deletedActivity, error } = await connect()
+  const { data: deletedLocation, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("activityId", id);
+    .eq("locationId", id);
   if (error) {
     throw error;
   }
-  return deletedActivity;
+  return deletedLocation;
 }
 
 module.exports = {

@@ -1,52 +1,388 @@
 <script setup lang="ts">
-import { refSignedInUserId } from '@/models/users';
-import { getActivitiesExcludingUserId } from '@/models/users';
-import { getFullName } from '@/models/users';
+import { ref, onMounted, computed } from 'vue'
+import { isLoggedIn, getSession } from '@/models/session'
+import { api } from '@/models/session'
+import type { DataEnvelope, DataListEnvelope } from '@/models/dataEnvelope'
+import { useRouter } from 'vue-router'
 
-const signedInUserId = refSignedInUserId()
+interface User {
+  userId: number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+}
 
+interface Location {
+  locationId: number;
+  locationName: string;
+  userId: number;
+}
+
+interface Activity {
+  activityId: number;
+  userId: number;
+  description: string;
+  duration: number;
+  distance: number;
+  locationId: number;
+  date?: string;
+  user?: User;
+  location?: Location;
+}
+
+const router = useRouter()
+const activities = ref<Activity[]>([])
+const users = ref<User[]>([])
+const loading = ref(false)
+const errorMessage = ref('')
+const selectedUserId = ref<number | null>(null)
+const searchTerm = ref('')
+
+// Computed property for filtered activities
+const filteredActivities = computed(() => {
+  let result = activities.value
+  
+  // Filter by selected user if one is selected
+  if (selectedUserId.value) {
+    result = result.filter(activity => activity.userId === selectedUserId.value)
+  }
+  
+  // Filter by search term if one is provided
+  if (searchTerm.value) {
+    const term = searchTerm.value.toLowerCase()
+    result = result.filter(activity => 
+      activity.description.toLowerCase().includes(term) ||
+      activity.location?.locationName.toLowerCase().includes(term) ||
+      getUserFullName(activity.userId).toLowerCase().includes(term)
+    )
+  }
+  
+  // Sort by date (newest first)
+  return result.sort((a, b) => {
+    if (!a.date || !b.date) return 0
+    return new Date(b.date).getTime() - new Date(a.date).getTime()
+  })
+})
+
+// Load data on component mount
+onMounted(async () => {
+  if (!isLoggedIn()) {
+    router.push('/login')
+    return
+  }
+  
+  await Promise.all([
+    loadActivities(),
+    loadUsers()
+  ])
+})
+
+async function loadActivities() {
+  loading.value = true
+  try {
+    const response = await api<DataListEnvelope<Activity>>('activities')
+    if (response && response.data) {
+      activities.value = response.data
+    }
+  } catch (error) {
+    console.error('Error loading activities:', error)
+    errorMessage.value = 'Failed to load activities'
+  } finally {
+    loading.value = false
+  }
+}
+
+async function loadUsers() {
+  try {
+    const response = await api<DataListEnvelope<User>>('users')
+    if (response && response.data) {
+      users.value = response.data
+    }
+  } catch (error) {
+    console.error('Error loading users:', error)
+  }
+}
+
+function getUserFullName(userId: number): string {
+  const user = users.value.find(u => u.userId === userId)
+  return user ? `${user.firstname} ${user.lastname}` : 'Unknown User'
+}
+
+function getUserAvatar(userId: number): string {
+  const user = users.value.find(u => u.userId === userId)
+  if (!user) return ''
+  
+  const initials = `${user.firstname.charAt(0)}${user.lastname.charAt(0)}`
+  return initials.toUpperCase()
+}
+
+function getLocationName(locationId: number): string {
+  const activity = activities.value.find(a => a.locationId === locationId)
+  return activity?.location?.locationName || 'Unknown location'
+}
+
+function formatDuration(minutes: number): string {
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+  return `${hours}:${mins.toString().padStart(2, '0')}`
+}
+
+function clearFilters() {
+  selectedUserId.value = null
+  searchTerm.value = ''
+}
 </script>
 
 <template>
-  <div class="container" v-if="signedInUserId === 0">
-    <h1 class="title">Login</h1>
-    <h2 class="subtitle">Please select a user to login</h2>
-  </div>
-  <div class="container" v-if = "signedInUserId > 0">
-    <h1 class="title">Friends Activity</h1>
-    <div class="columns">
-      <div class="column is-half is-offset-one-quarter">
-        <li v-for="(item, index) in getActivitiesExcludingUserId(signedInUserId)" :key="index">
-          <div>
-            <article class="media-box">
-              <div class="media-content">
-                <div class="content">
-                  <p>
-                    <strong> {{ getFullName(item.userId) }}</strong>
-                    <br />
-                    <strong>{{ item.description }}</strong>
-                    <br />
-                    <small>{{ item.location }}</small>
-                    <br/>
-                    <small>{{ item.date }}</small>
-                    <br/>
-                    <div class="columns">
-                      <div class="column is-half">
-                        <h3 class="value">{{ item.duration }}</h3>
-                        <caption class="caption">Duration</caption>
-                      </div>
-                      <div class="column is-half">
-                        <h3 class="value">{{ item.distance + ' ft' }}</h3>
-                        <caption class="caption">Distance</caption>
+  <div>
+    <!-- Hero section for page title -->
+    <section class="hero is-info is-bold">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-users"></i>
+              </span>
+              <span>Friends Activity</span>
+            </span>
+          </h1>
+          <h2 class="subtitle">
+            See what your friends are up to
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="section">
+      <div class="container">
+        <div class="notification is-danger" v-if="errorMessage">
+          <button class="delete" @click="errorMessage = ''"></button>
+          {{ errorMessage }}
+        </div>
+        
+        <!-- Filters Section -->
+        <div class="box mb-5">
+          <div class="columns">
+            <div class="column is-8">
+              <div class="field">
+                <label class="label">Search</label>
+                <div class="control has-icons-left">
+                  <input
+                    type="text"
+                    class="input"
+                    placeholder="Search by description, location, or person"
+                    v-model="searchTerm"
+                  />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-search"></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="column is-4">
+              <div class="field">
+                <label class="label">Filter by Person</label>
+                <div class="control">
+                  <div class="select is-fullwidth">
+                    <select v-model="selectedUserId">
+                      <option :value="null">All Users</option>
+                      <option
+                        v-for="user in users"
+                        :key="user.userId"
+                        :value="user.userId"
+                      >
+                        {{ user.firstname }} {{ user.lastname }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="field is-grouped">
+            <div class="control">
+              <button
+                class="button is-light"
+                @click="clearFilters"
+                :disabled="!searchTerm && selectedUserId === null"
+              >
+                <span class="icon">
+                  <i class="fas fa-undo"></i>
+                </span>
+                <span>Clear Filters</span>
+              </button>
+            </div>
+            
+            <div class="control">
+              <button
+                class="button is-info"
+                @click="loadActivities"
+                :disabled="loading"
+              >
+                <span class="icon">
+                  <i class="fas fa-sync-alt"></i>
+                </span>
+                <span>Refresh</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div v-if="loading" class="has-text-centered my-6">
+          <span class="icon is-large">
+            <i class="fas fa-spinner fa-pulse fa-3x"></i>
+          </span>
+          <p class="is-size-5 mt-3">Loading activities...</p>
+        </div>
+        
+        <!-- Empty State -->
+        <div v-else-if="activities.length === 0" class="has-text-centered my-6">
+          <div class="icon is-large">
+            <i class="fas fa-users fa-3x has-text-grey-light"></i>
+          </div>
+          <p class="is-size-5 mt-4 has-text-grey">
+            No activities found.
+            <br>
+            Check back later when your friends post their workouts!
+          </p>
+        </div>
+        
+        <!-- Filtered Empty State -->
+        <div v-else-if="filteredActivities.length === 0" class="has-text-centered my-6">
+          <div class="icon is-large">
+            <i class="fas fa-filter fa-3x has-text-grey-light"></i>
+          </div>
+          <p class="is-size-5 mt-4 has-text-grey">
+            No activities match your filters.
+            <br>
+            Try adjusting your search or filter criteria.
+          </p>
+          <button class="button is-info mt-4" @click="clearFilters">
+            <span class="icon">
+              <i class="fas fa-undo"></i>
+            </span>
+            <span>Clear Filters</span>
+          </button>
+        </div>
+        
+        <!-- Activities Feed -->
+        <div v-else>
+          <div class="activity-feed">
+            <div v-for="activity in filteredActivities" :key="activity.activityId" class="card mb-5 activity-card">
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-left">
+                    <div class="avatar-circle">
+                      {{ getUserAvatar(activity.userId) }}
+                    </div>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-4">{{ getUserFullName(activity.userId) }}</p>
+                    <p class="subtitle is-6">
+                      <span class="icon-text">
+                        <span class="icon has-text-info">
+                          <i class="fas fa-map-marker-alt"></i>
+                        </span>
+                        <span>{{ getLocationName(activity.locationId) }}</span>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="media-right">
+                    <p class="has-text-grey-light">
+                      {{ activity.date }}
+                    </p>
+                  </div>
+                </div>
+                
+                <div class="content mt-4">
+                  <h3 class="is-size-4">{{ activity.description }}</h3>
+                  
+                  <div class="columns mt-4 is-mobile has-text-centered">
+                    <div class="column">
+                      <div class="stat-box">
+                        <p class="heading">Distance</p>
+                        <p class="title is-4">{{ activity.distance }} mi</p>
                       </div>
                     </div>
-                  </p>
+                    <div class="column">
+                      <div class="stat-box">
+                        <p class="heading">Duration</p>
+                        <p class="title is-4">{{ formatDuration(activity.duration) }}</p>
+                      </div>
+                    </div>
+                    <div class="column">
+                      <div class="stat-box">
+                        <p class="heading">Pace</p>
+                        <p class="title is-4">
+                          {{ (activity.distance / (activity.duration / 60)).toFixed(1) }} mph
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>             
-            </article>
+              </div>
+            </div>
           </div>
-        </li>
+        </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
+
+<style scoped>
+.activity-feed {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.activity-card {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.activity-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(10, 10, 10, 0.1);
+}
+
+.avatar-circle {
+  width: 48px;
+  height: 48px;
+  background-color: #209cee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.stat-box {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.stat-box:hover {
+  background-color: #e8e8e8;
+  transform: translateY(-3px);
+}
+
+.heading {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #777;
+  margin-bottom: 0.5rem;
+}
+</style>

@@ -1,6 +1,8 @@
 const express = require('express')
 const usersController = require('./controllers/users')
 const activitiesController = require('./controllers/activities')
+const locationsController = require('./controllers/locations')
+const { verifyAccessToken } = require('./middleware/verifyJWT')
 const cors = require('cors')
 
 const PORT = process.env.PORT ?? 8000
@@ -29,7 +31,8 @@ app
     res.send('Hello New Paltz, NY!!!')
   })
   .use('/api/v1/users', usersController)
-  .use('/api/v1/activities', activitiesController)
+  .use('/api/v1/activities', verifyAccessToken, activitiesController)
+  .use('/api/v1/locations', locationsController)
 
   .use('/', express.static('dist')) 
 
@@ -51,4 +54,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/`)
 });
-  

@@ -1,28 +1,29 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-//import { refUsers } from '@/models/users'
-//import { refSignedInUserId } from '@/models/users'
-//import { getUserById } from '@/models/users'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { isLoggedIn, isAdmin, refSession, logout } from '@/models/session'
 
 const isBurgerActive = ref(false)
-const isLoginDropdownActive = ref(false)
+const router = useRouter()
+const session = refSession()
 
-/*const users = refUsers()
-const signedInUserId = refSignedInUserId()
+const userName = computed(() => {
+  if (session.value.user) {
+    return `${session.value.user.firstname} ${session.value.user.lastname}`
+  }
+  return ''
+})
 
-const getNameUser = (userId: number) => {
-  const user = getUserById(userId)
-  return user?.firstName + ' ' + user?.lastName
-}*/
-
-// Temporary just so entire page doesn't break
-const signedInUserId = ref(0)
+function handleLogout() {
+  logout()
+  router.push('/login')
+}
 </script>
 
 <template>
   <nav class="navbar is-success" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item" tag="button">
+      <router-link to="/" class="navbar-item">
         <svg
           width="640"
           height="160"
@@ -58,56 +59,82 @@ const signedInUserId = ref(0)
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
       </a>
     </div>
 
     <div id="navbarBasicExample" class="navbar-menu" :class="{ 'is-active': isBurgerActive }">
       <div class="navbar-start">
-        <router-link to="/myactivity" class="navbar-item"> My Activity </router-link>
+        <router-link to="/myactivity" class="navbar-item" v-if="isLoggedIn()">
+          <span class="icon">
+            <i class="fas fa-running"></i>
+          </span>
+          <span>My Activity</span>
+        </router-link>
 
-        <router-link to="/friendsactivity" class="navbar-item" tag="button"> Friends Activity </router-link>
+        <router-link to="/friendsactivity" class="navbar-item" v-if="isLoggedIn()">
+          <span class="icon">
+            <i class="fas fa-users"></i>
+          </span>
+          <span>Friends Activity</span>
+        </router-link>
 
-        <a class="navbar-item"> People Search </a>
+        <router-link to="/search" class="navbar-item" v-if="isLoggedIn()">
+          <span class="icon">
+            <i class="fas fa-search"></i>
+          </span>
+          <span>People Search</span>
+        </router-link>
 
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link"> Admin </a>
+        <div class="navbar-item has-dropdown is-hoverable" v-if="isAdmin()">
+          <a class="navbar-link">
+            <span class="icon">
+              <i class="fas fa-shield-alt"></i>
+            </span>
+            <span>Admin</span>
+          </a>
 
           <div class="navbar-dropdown">
-            <router-link to="/admin" class="navbar-item"> Users </router-link>
+            <router-link to="/admin" class="navbar-item">
+              <span class="icon">
+                <i class="fas fa-users-cog"></i>
+              </span>
+              <span>Users</span>
+            </router-link>
           </div>
         </div>
       </div>
 
       <div class="navbar-end">
         <div class="navbar-item">
-          <div class="buttons" v-if="signedInUserId > 0">
-            <div class="avatar">
-              <strong>{{ getNameUser(signedInUserId) }}</strong>
+          <div class="buttons" v-if="isLoggedIn()">
+            <div class="avatar mr-2">
+              <span class="icon">
+                <i class="fas fa-user-circle"></i>
+              </span>
+              <strong>{{ userName }}</strong>
             </div>
-            <a class="button is-primary" @click="signedInUserId = 0">
-              <strong>Log Out</strong>
-            </a>
+            <button class="button is-light" @click="handleLogout">
+              <span class="icon">
+                <i class="fas fa-sign-out-alt"></i>
+              </span>
+              <span>Log Out</span>
+            </button>
           </div>
-          <div class="buttons" v-if="signedInUserId === 0">
-            <router-link to="/signup" class="navbar-item">
-              <strong>Sign up</strong>
+          <div class="buttons" v-else>
+            <router-link to="/signup" class="button is-primary">
+              <span class="icon">
+                <i class="fas fa-user-plus"></i>
+              </span>
+              <span>Sign up</span>
             </router-link>
 
-            <router-link to="/login" class="navbar-item">
-              <strong>Log in</strong>
+            <router-link to="/login" class="button is-light">
+              <span class="icon">
+                <i class="fas fa-sign-in-alt"></i>
+              </span>
+              <span>Log in</span>
             </router-link>
           </div>
-        </div>
-        <div class="navbar-item">
-          <a
-            class="bd-tw-button button"
-            data-social-network="Twitter"
-            data-social-action="tweet"
-            data-social-target="https://bulma.io"
-            target="_blank"
-            href="https://twitter.com/intent/tweet?text=Bulma: a modern CSS framework based on Flexbox&amp;hashtags=bulmaio&amp;url=https://bulma.io&amp;via=jgthms"
-            ><span class="icon"><i class="fab fa-twitter"></i></span><span> Tweet </span></a>
         </div>
       </div>
     </div>
