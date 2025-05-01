@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { addUser } from "../models/users"
 import type { User } from "../models/users"
-import { loginWithID } from "../models/session"
+import { signUp } from '@/models/session'
 
 const firstName = ref('')
 const lastName = ref('')
@@ -21,17 +21,7 @@ function handleSubmit() {
     isadmin: isAdmin.value
   }
 
-  addUser(user).then((response) => {
-    const addedUser = (response.data as unknown as Array<any>)[0];
-
-    console.log("User added:", addedUser)
-
-    loginWithID(addedUser.userid) 
-
-    
-  }).catch((error) => {
-    console.error("Error adding user:", error)
-  })
+  signUp(user)
 }
 
 </script>

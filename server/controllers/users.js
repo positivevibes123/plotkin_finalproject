@@ -1,6 +1,7 @@
 const model = require('../models/users');
 const express = require('express');
 const router = express.Router();
+const { generateAccessToken } = require('../middleware/verifyJWT') 
 
 router
     .get('/', (req, res, next) => {
@@ -18,16 +19,20 @@ router
         
          // Make sure not to send password to client - sensitive information
             
-         const safeUser = {...data[0], password: undefined}
-         data[0] = safeUser
+         //const safeUser = {...data[0], password: undefined}
+         //data[0] = safeUser
+
+         const token = generateAccessToken(data[0].userid)
 
          res.status(201).json({
-             data: data,
+             data: token,
              message: 'User found successfully',
              isSuccess: true
          })   
        })
     })
+
+
     .get('/:id', (req, res, next) => {
         const { id } = req.params
 
@@ -53,11 +58,13 @@ router
         
         // Make sure not to send password to client - sensitive information
 
-        const safeUser = {...data[0], password: undefined}
-        data[0] = safeUser
+        //const safeUser = {...data[0], password: undefined}
+        //data[0] = safeUser
+
+        const token = generateAccessToken(data[0].userid)
 
             res.status(201).json({
-                data: data,
+                data: token,
                 message: 'User created successfully',
                 isSuccess: true
             })

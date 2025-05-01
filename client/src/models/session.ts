@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import * as myFetch from '../models/myfetch'
-import { type User, get } from '../models/users'
+import { type User, addUser } from '../models/users'
 import { login } from '../models/users'
 
 export function api<T>(url: string, data?: any, method?: string): Promise<T> {
@@ -26,19 +26,28 @@ export const isLoggedIn = () => session.value?.user !== null
   })
 }*/
 
-export function loginWithID(id: number) {
-  get(id).then((user) => {
-    const retrievedUser = (user.data as unknown as Array<any>)[0]
-    console.log('User logged in:', retrievedUser.userid)
-    session.value.user = retrievedUser
-  })
-}
-
-export function loginWithCredentials(username: string, password: string) {
+/* export function loginWithCredentials(username: string, password: string) {
   login(username, password).then((user) => {
     const retrievedUser = (user.data as unknown as Array<any>)[0]
     console.log('User logged in:', retrievedUser.userid)
     session.value.user = retrievedUser
+  })
+} */
+
+export function loginWithCredentials(username: string, password: string) {
+  login(username, password).then((token) => {
+    console.log("Retrieved user's token:", token.data)
+    session.value.token = token.data
+  })
+}
+
+export function signUp(user: User) {
+  addUser(user).then((token) => {
+    console.log("Created user's token: ", token.data)
+    session.value.token = token.data
+  })
+  .catch((error) => {
+    console.error('Error creating user:', error)
   })
 }
 
