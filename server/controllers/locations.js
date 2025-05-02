@@ -6,8 +6,7 @@ const { verifyAccessToken } = require('../middleware/verifyJWT');
 router
     // Get all locations - admin can see all, users can only see their own
     .get('/', verifyAccessToken, (req, res, next) => {
-        if (req.user.isAdmin) {
-            model.getAll().then((data) => {
+               model.getAll().then((data) => {
                 res.status(200).json({
                     data: data.data,
                     count: data.count,
@@ -15,12 +14,6 @@ router
                     isSuccess: true
                 })
             }).catch(next)
-        } else {
-            res.status(403).json({
-                message: 'Admin access required',
-                isSuccess: false
-            })
-        }
     })
     
     // Get locations for a specific user

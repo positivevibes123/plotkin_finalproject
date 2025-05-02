@@ -4,7 +4,7 @@ const router = express.Router();
 const { generateAccessToken, verifyAccessToken, verifyAdmin } = require('../middleware/verifyJWT') 
 
 router
-    .get('/', verifyAccessToken, verifyAdmin, (req, res, next) => {
+    .get('/', verifyAccessToken, (req, res, next) => {
         model.getAll().then((data) => {
             res.status(200).json({
                 data: data.data,

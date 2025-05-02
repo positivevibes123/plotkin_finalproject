@@ -6,26 +6,16 @@ const { verifyAccessToken, verifyAdmin } = require('../middleware/verifyJWT');
 router
     // Get all activities - admin can see all, users can only see their own
     .get('/', (req, res, next) => {
-        if (req.user.isAdmin) {
-            model.getAll().then((data) => {
-                res.status(200).json({
-                    data: data.data,
-                    count: data.count,
-                    message: 'Activities retrieved successfully',
-                    isSuccess: true
-                })
-            }).catch(next)
-        } else {
-            model.getByUserId(req.user.userid).then((data) => {
-                res.status(200).json({
-                    data: data,
-                    message: 'Activities retrieved successfully',
-                    isSuccess: true
-                })
-            }).catch(next)
-        }
+        model.getAll().then((data) => {
+            res.status(200).json({
+                data: data.data,
+                count: data.count,
+                message: 'Activities retrieved successfully',
+                isSuccess: true
+            })
+        }).catch(next)
     })
-    
+
     // Get activity by ID - users can only access their own activities
     .get('/:id', (req, res, next) => {
         const { id } = req.params
@@ -38,7 +28,7 @@ router
                     isSuccess: false
                 })
             }
-            
+
             res.status(200).json({
                 data: data,
                 message: 'Activity retrieved successfully',
@@ -46,11 +36,11 @@ router
             })
         }).catch(next)
     })
-    
+
     // Create a new activity
     .post('/', (req, res, next) => {
         const newValues = req.body
-        
+
         // Ensure the userId in the activity matches the authenticated user
         // unless the user is an admin
         if (newValues.userId !== req.user.userid && !req.user.isAdmin) {
@@ -68,7 +58,7 @@ router
             })
         }).catch(next)
     })
-    
+
     // Update an activity
     .patch('/:id', (req, res, next) => {
         const { id } = req.params
@@ -83,7 +73,7 @@ router
                     isSuccess: false
                 })
             }
-            
+
             // Proceed with update
             model.update(id, newValues).then((data) => {
                 res.status(200).json({
@@ -94,7 +84,7 @@ router
             }).catch(next)
         }).catch(next)
     })
-    
+
     // Delete an activity
     .delete('/:id', (req, res, next) => {
         const { id } = req.params
@@ -108,7 +98,7 @@ router
                     isSuccess: false
                 })
             }
-            
+
             // Proceed with delete
             model.remove(id).then(() => {
                 res.status(200).json({
