@@ -36,17 +36,11 @@ const activities = ref<Activity[]>([])
 const users = ref<User[]>([])
 const loading = ref(false)
 const errorMessage = ref('')
-const selectedUserid = ref<number | null>(null)
 const searchTerm = ref('')
 
 // Computed property for filtered activities
 const filteredActivities = computed(() => {
   let result = activities.value
-  
-  // Filter by selected user if one is selected
-  if (selectedUserid.value) {
-    result = result.filter(activity => activity.userid === selectedUserid.value)
-  }
   
   // Filter by search term if one is provided
   if (searchTerm.value) {
@@ -129,7 +123,6 @@ function formatDuration(minutes: number): string {
 }
 
 function clearFilters() {
-  selectedUserid.value = null
   searchTerm.value = ''
 }
 </script>
@@ -173,32 +166,12 @@ function clearFilters() {
                   <input
                     type="text"
                     class="input"
-                    placeholder="Search by description, location, or person"
+                    placeholder="Search by activity description"
                     v-model="searchTerm"
                   />
                   <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
                   </span>
-                </div>
-              </div>
-            </div>
-            
-            <div class="column is-4">
-              <div class="field">
-                <label class="label">Filter by Person</label>
-                <div class="control">
-                  <div class="select is-fullwidth">
-                    <select v-model="selectedUserid">
-                      <option :value="null">All Users</option>
-                      <option
-                        v-for="user in users"
-                        :key="user.userid"
-                        :value="user.userid"
-                      >
-                        {{ user.firstname }} {{ user.lastname }}
-                      </option>
-                    </select>
-                  </div>
                 </div>
               </div>
             </div>
@@ -209,7 +182,7 @@ function clearFilters() {
               <button
                 class="button is-light"
                 @click="clearFilters"
-                :disabled="!searchTerm && selectedUserid === null"
+                :disabled="!searchTerm"
               >
                 <span class="icon">
                   <i class="fas fa-undo"></i>
