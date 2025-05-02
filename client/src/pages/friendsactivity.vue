@@ -6,7 +6,7 @@ import type { DataEnvelope, DataListEnvelope } from '@/models/dataEnvelope'
 import { useRouter } from 'vue-router'
 
 interface User {
-  userId: number;
+  userid: number;
   username: string;
   firstname: string;
   lastname: string;
@@ -14,18 +14,18 @@ interface User {
 }
 
 interface Location {
-  locationId: number;
+  locationid: number;
   locationName: string;
-  userId: number;
+  userid: number;
 }
 
 interface Activity {
-  activityId: number;
-  userId: number;
+  activityid: number;
+  userid: number;
   description: string;
   duration: number;
   distance: number;
-  locationId: number;
+  locationid: number;
   date?: string;
   user?: User;
   location?: Location;
@@ -36,7 +36,7 @@ const activities = ref<Activity[]>([])
 const users = ref<User[]>([])
 const loading = ref(false)
 const errorMessage = ref('')
-const selectedUserId = ref<number | null>(null)
+const selectedUserid = ref<number | null>(null)
 const searchTerm = ref('')
 
 // Computed property for filtered activities
@@ -44,8 +44,8 @@ const filteredActivities = computed(() => {
   let result = activities.value
   
   // Filter by selected user if one is selected
-  if (selectedUserId.value) {
-    result = result.filter(activity => activity.userId === selectedUserId.value)
+  if (selectedUserid.value) {
+    result = result.filter(activity => activity.userid === selectedUserid.value)
   }
   
   // Filter by search term if one is provided
@@ -54,7 +54,7 @@ const filteredActivities = computed(() => {
     result = result.filter(activity => 
       activity.description.toLowerCase().includes(term) ||
       activity.location?.locationName.toLowerCase().includes(term) ||
-      getUserFullName(activity.userId).toLowerCase().includes(term)
+      getUserFullName(activity.userid).toLowerCase().includes(term)
     )
   }
   
@@ -104,21 +104,21 @@ async function loadUsers() {
   }
 }
 
-function getUserFullName(userId: number): string {
-  const user = users.value.find(u => u.userId === userId)
+function getUserFullName(userid: number): string {
+  const user = users.value.find(u => u.userid === userid)
   return user ? `${user.firstname} ${user.lastname}` : 'Unknown User'
 }
 
-function getUserAvatar(userId: number): string {
-  const user = users.value.find(u => u.userId === userId)
+function getUserAvatar(userid: number): string {
+  const user = users.value.find(u => u.userid === userid)
   if (!user) return ''
   
   const initials = `${user.firstname.charAt(0)}${user.lastname.charAt(0)}`
   return initials.toUpperCase()
 }
 
-function getLocationName(locationId: number): string {
-  const activity = activities.value.find(a => a.locationId === locationId)
+function getLocationName(locationid: number): string {
+  const activity = activities.value.find(a => a.locationid === locationid)
   return activity?.location?.locationName || 'Unknown location'
 }
 
@@ -129,7 +129,7 @@ function formatDuration(minutes: number): string {
 }
 
 function clearFilters() {
-  selectedUserId.value = null
+  selectedUserid.value = null
   searchTerm.value = ''
 }
 </script>
@@ -188,12 +188,12 @@ function clearFilters() {
                 <label class="label">Filter by Person</label>
                 <div class="control">
                   <div class="select is-fullwidth">
-                    <select v-model="selectedUserId">
+                    <select v-model="selectedUserid">
                       <option :value="null">All Users</option>
                       <option
                         v-for="user in users"
-                        :key="user.userId"
-                        :value="user.userId"
+                        :key="user.userid"
+                        :value="user.userid"
                       >
                         {{ user.firstname }} {{ user.lastname }}
                       </option>
@@ -209,7 +209,7 @@ function clearFilters() {
               <button
                 class="button is-light"
                 @click="clearFilters"
-                :disabled="!searchTerm && selectedUserId === null"
+                :disabled="!searchTerm && selectedUserid === null"
               >
                 <span class="icon">
                   <i class="fas fa-undo"></i>
@@ -274,22 +274,22 @@ function clearFilters() {
         <!-- Activities Feed -->
         <div v-else>
           <div class="activity-feed">
-            <div v-for="activity in filteredActivities" :key="activity.activityId" class="card mb-5 activity-card">
+            <div v-for="activity in filteredActivities" :key="activity.activityid" class="card mb-5 activity-card">
               <div class="card-content">
                 <div class="media">
                   <div class="media-left">
                     <div class="avatar-circle">
-                      {{ getUserAvatar(activity.userId) }}
+                      {{ getUserAvatar(activity.userid) }}
                     </div>
                   </div>
                   <div class="media-content">
-                    <p class="title is-4">{{ getUserFullName(activity.userId) }}</p>
+                    <p class="title is-4">{{ getUserFullName(activity.userid) }}</p>
                     <p class="subtitle is-6">
                       <span class="icon-text">
                         <span class="icon has-text-info">
                           <i class="fas fa-map-marker-alt"></i>
                         </span>
-                        <span>{{ getLocationName(activity.locationId) }}</span>
+                        <span>{{ getLocationName(activity.locationid) }}</span>
                       </span>
                     </p>
                   </div>
