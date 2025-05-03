@@ -63,13 +63,6 @@ function handleLogout() {
           <span>Friends Activity</span>
         </router-link>
 
-        <router-link to="/search" class="navbar-item" v-if="isLoggedIn()">
-          <span class="icon">
-            <i class="fas fa-search"></i>
-          </span>
-          <span>People Search</span>
-        </router-link>
-
         <div class="navbar-item has-dropdown is-hoverable" v-if="isAdmin()">
           <a class="navbar-link">
             <span class="icon">

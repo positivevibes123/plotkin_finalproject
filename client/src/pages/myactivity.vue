@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router'
 
 interface Location {
   locationid: number;
-  locationName: string;
+  locationname: string;
   userid: number;
 }
 
@@ -39,7 +39,7 @@ const getInitialForm = () => ({
   duration: 0,
   distance: 0,
   locationid: 0,
-  locationName: ''
+  locationname: ''
 })
 
 const formData = ref(getInitialForm())
@@ -104,7 +104,7 @@ function showEditForm(activity: Activity) {
     duration: activity.duration,
     distance: activity.distance,
     locationid: activity.locationid,
-    locationName: location?.locationName || ''
+    locationname: location?.locationname || ''
   }
 }
 
@@ -115,9 +115,9 @@ async function handleSubmit() {
     
     // Check if location exists, if not create it
     let locationid = formData.value.locationid
-    if (!locationid && formData.value.locationName) {
+    if (!locationid && formData.value.locationname) {
       const locationResponse = await api<DataEnvelope<Location>>('locations', {
-        locationName: formData.value.locationName,
+        locationname: formData.value.locationname,
         userid: getSession()?.decoded?.userid
       }, 'POST')
       
@@ -208,9 +208,9 @@ function resetForm() {
   editMode.value = false
 }
 
-function getLocationName(locationId: number): string {
-  const location = locations.value.find(loc => loc.locationid === locationId)
-  return location?.locationName || 'Unknown location'
+function getLocationName(locationid: number): string {
+  const location = locations.value.find(loc => loc.locationid === locationid)
+  return location?.locationname || 'Unknown location'
 }
 
 function formatDuration(minutes: number): string {
@@ -339,7 +339,7 @@ function formatDuration(minutes: number): string {
                         :key="location.locationid"
                         :value="location.locationid"
                       >
-                        {{ location.locationName }}
+                        {{ location.locationname }}
                       </option>
                     </select>
                   </div>
@@ -349,7 +349,7 @@ function formatDuration(minutes: number): string {
                     type="text"
                     class="input mt-2"
                     placeholder="Enter new location name"
-                    v-model="formData.locationName"
+                    v-model="formData.locationname"
                   />
                 </div>
               </div>

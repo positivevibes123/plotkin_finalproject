@@ -37,6 +37,26 @@ router
         }).catch(next)
     })
 
+    .get('/user/:id', (req, res, next) => {
+        const { id } = req.params
+
+        // Check if the user is requesting their own data or is an admin
+        if (req.user.userid != id && !req.user.isAdmin) {
+            return res.status(403).json({
+                message: 'You are not authorized to access this data',
+                isSuccess: false
+            })
+        }
+
+        model.getByUserId(id).then((data) => {
+            res.status(200).json({
+                data: data,
+                message: 'Activities retrieved successfully',
+                isSuccess: true
+            })
+        }).catch(next)
+    })
+
     // Create a new activity
     .post('/', (req, res, next) => {
         const newValues = req.body

@@ -4,57 +4,12 @@ import { isLoggedIn, getSession } from '@/models/session'
 import { api } from '@/models/session'
 import type { DataEnvelope } from '@/models/dataEnvelope'
 
-interface ActivitySummary {
-  today: {
-    distance: number;
-    duration: string;
-    avgPace: number;
-    calories: number;
-  };
-  week: {
-    distance: number;
-    duration: string;
-    avgPace: number;
-    calories: number;
-  };
-  allTime: {
-    distance: number;
-    duration: string;
-    avgPace: number;
-    calories: number;
-  };
-}
-
 const loading = ref(false)
-const summary = ref<ActivitySummary>({
-  today: { distance: 0, duration: '0:0', avgPace: 0, calories: 0 },
-  week: { distance: 0, duration: '0:0', avgPace: 0, calories: 0 },
-  allTime: { distance: 3.8, duration: '2:45', avgPace: 1.4, calories: 1127.5 }
-})
 
 const userFirstName = computed(() => {
   return getSession()?.user?.firstname || 'Guest'
 })
 
-onMounted(async () => {
-  if (isLoggedIn()) {
-    await loadActivitySummary()
-  }
-})
-
-async function loadActivitySummary() {
-  try {
-    loading.value = true
-    const response = await api<DataEnvelope<ActivitySummary>>('activities/summary')
-    if (response.isSuccess && response.data) {
-      summary.value = response.data
-    }
-  } catch (error) {
-    console.error('Failed to load activity summary:', error)
-  } finally {
-    loading.value = false
-  }
-}
 </script>
 
 <template>
@@ -108,103 +63,6 @@ async function loadActivitySummary() {
           </div>
 
           <div v-else>
-            <div class="columns is-multiline">
-              <!-- Today's Stats -->
-              <div class="column is-one-third">
-                <div class="box has-text-success summary">
-                  <h2 class="title is-4">
-                    <span class="icon-text">
-                      <span class="icon">
-                        <i class="fas fa-calendar-day"></i>
-                      </span>
-                      <span>Today</span>
-                    </span>
-                  </h2>
-                  <div class="columns is-multiline">
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.today.distance }} mi</h3>
-                      <p class="caption has-text-grey">Distance</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.today.duration }}</h3>
-                      <p class="caption has-text-grey">Duration</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.today.avgPace }} mph</h3>
-                      <p class="caption has-text-grey">Avg Pace</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.today.calories }}</h3>
-                      <p class="caption has-text-grey">Calories</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- This Week Stats -->
-              <div class="column is-one-third">
-                <div class="box has-text-info summary">
-                  <h2 class="title is-4">
-                    <span class="icon-text">
-                      <span class="icon">
-                        <i class="fas fa-calendar-week"></i>
-                      </span>
-                      <span>This Week</span>
-                    </span>
-                  </h2>
-                  <div class="columns is-multiline">
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.week.distance }} mi</h3>
-                      <p class="caption has-text-grey">Distance</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.week.duration }}</h3>
-                      <p class="caption has-text-grey">Duration</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.week.avgPace }} mph</h3>
-                      <p class="caption has-text-grey">Avg Pace</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.week.calories }}</h3>
-                      <p class="caption has-text-grey">Calories</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- All Time Stats -->
-              <div class="column is-one-third">
-                <div class="box has-text-danger summary">
-                  <h2 class="title is-4">
-                    <span class="icon-text">
-                      <span class="icon">
-                        <i class="fas fa-history"></i>
-                      </span>
-                      <span>All Time</span>
-                    </span>
-                  </h2>
-                  <div class="columns is-multiline">
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.allTime.distance }} mi</h3>
-                      <p class="caption has-text-grey">Distance</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.allTime.duration }}</h3>
-                      <p class="caption has-text-grey">Duration</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.allTime.avgPace }} mph</h3>
-                      <p class="caption has-text-grey">Avg Pace</p>
-                    </div>
-                    <div class="column is-half">
-                      <h3 class="value is-size-4">{{ summary.allTime.calories }}</h3>
-                      <p class="caption has-text-grey">Calories</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <!-- Quick Actions -->
             <div class="box mt-5">
