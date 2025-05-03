@@ -6,18 +6,18 @@ import type { DataEnvelope, DataListEnvelope } from '@/models/dataEnvelope'
 import { useRouter } from 'vue-router'
 
 interface Location {
-  locationId: number;
+  locationid: number;
   locationName: string;
-  userId: number;
+  userid: number;
 }
 
 interface Activity {
-  activityId?: number;
-  userId: number;
+  activityid?: number;
+  userid: number;
   description: string;
   duration: number;
   distance: number;
-  locationId: number;
+  locationid: number;
   date?: string;
   location?: Location;
 }
@@ -32,13 +32,13 @@ const successMessage = ref('')
 const editMode = ref(false)
 
 const getInitialForm = () => ({
-  activityId: undefined as number | undefined,
-  userId: getSession()?.decoded?.userid,
+  activityid: undefined as number | undefined,
+  userid: getSession()?.decoded?.userid,
   description: '',
   date: new Date().toISOString().slice(0, 10),
   duration: 0,
   distance: 0,
-  locationId: 0,
+  locationid: 0,
   locationName: ''
 })
 
@@ -60,10 +60,10 @@ onMounted(async () => {
 async function loadActivities() {
   loading.value = true
   try {
-    const userId = getSession()?.decoded?.userid
-    if (!userId) return
+    const userid = getSession()?.decoded?.userid
+    if (!userid) return
 
-    const response = await api<DataListEnvelope<Activity>>(`activities/user/${userId}`)
+    const response = await api<DataListEnvelope<Activity>>(`activities/user/${userid}`)
     if (response && response.data) {
       activities.value = response.data
     }
@@ -77,10 +77,10 @@ async function loadActivities() {
 
 async function loadLocations() {
   try {
-    const userId = getSession()?.decoded?.userid
-    if (!userId) return
+    const userid = getSession()?.decoded?.userid
+    if (!userid) return
 
-    const response = await api<DataListEnvelope<Location>>(`locations/user/${userId}`)
+    const response = await api<DataListEnvelope<Location>>(`locations/user/${userid}`)
     if (response && response.data) {
       locations.value = response.data
     }
@@ -94,16 +94,16 @@ function showEditForm(activity: Activity) {
   formActive.value = true
   
   // Get the location name
-  const location = locations.value.find(loc => loc.locationId === activity.locationId)
+  const location = locations.value.find(loc => loc.locationid === activity.locationid)
   
   formData.value = {
-    activityId: activity.activityId,
-    userId: activity.userId,
+    activityid: activity.activityid,
+    userid: activity.userid,
     description: activity.description,
     date: activity.date || new Date().toISOString().slice(0, 10),
     duration: activity.duration,
     distance: activity.distance,
-    locationId: activity.locationId,
+    locationid: activity.locationid,
     locationName: location?.locationName || ''
   }
 }
@@ -114,33 +114,33 @@ async function handleSubmit() {
     loading.value = true
     
     // Check if location exists, if not create it
-    let locationId = formData.value.locationId
-    if (!locationId && formData.value.locationName) {
+    let locationid = formData.value.locationid
+    if (!locationid && formData.value.locationName) {
       const locationResponse = await api<DataEnvelope<Location>>('locations', {
         locationName: formData.value.locationName,
-        userId: getSession()?.decoded?.userid
+        userid: getSession()?.decoded?.userid
       }, 'POST')
       
       if (locationResponse.isSuccess && locationResponse.data) {
-        locationId = locationResponse.data.locationId
+        locationid = locationResponse.data.locationid
         // Refresh locations
         await loadLocations()
       }
     }
     
     const activityData = {
-      userId: getSession()?.decoded?.userid,
+      userid: getSession()?.decoded?.userid,
       description: formData.value.description,
       duration: Number(formData.value.duration),
       distance: Number(formData.value.distance),
-      locationId: locationId,
+      locationid: locationid,
       date: formData.value.date
     }
     
-    if (editMode.value && formData.value.activityId) {
+    if (editMode.value && formData.value.activityid) {
       // Update existing activity
       const response = await api<DataEnvelope<Activity>>(
-        `activities/${formData.value.activityId}`,
+        `activities/${formData.value.activityid}`,
         activityData,
         'PATCH'
       )
@@ -209,7 +209,7 @@ function resetForm() {
 }
 
 function getLocationName(locationId: number): string {
-  const location = locations.value.find(loc => loc.locationId === locationId)
+  const location = locations.value.find(loc => loc.locationid === locationId)
   return location?.locationName || 'Unknown location'
 }
 
@@ -332,12 +332,12 @@ function formatDuration(minutes: number): string {
                 <label class="label">Location</label>
                 <div class="control">
                   <div class="select is-fullwidth" v-if="locations.length > 0">
-                    <select v-model="formData.locationId">
+                    <select v-model="formData.locationid">
                       <option :value="0">Select a location or enter a new one</option>
                       <option
                         v-for="location in locations"
-                        :key="location.locationId"
-                        :value="location.locationId"
+                        :key="location.locationid"
+                        :value="location.locationid"
                       >
                         {{ location.locationName }}
                       </option>
@@ -345,7 +345,7 @@ function formatDuration(minutes: number): string {
                   </div>
                   
                   <input
-                    v-if="formData.locationId === 0"
+                    v-if="formData.locationid === 0"
                     type="text"
                     class="input mt-2"
                     placeholder="Enter new location name"
@@ -421,7 +421,7 @@ function formatDuration(minutes: number): string {
         </div>
         
         <div v-else class="columns is-multiline">
-          <div v-for="activity in activities" :key="activity.activityId" class="column is-4">
+          <div v-for="activity in activities" :key="activity.activityid" class="column is-4">
             <div class="card activity-card">
               <header class="card-header">
                 <p class="card-header-title">
@@ -442,7 +442,7 @@ function formatDuration(minutes: number): string {
                     </div>
                     <div class="column">
                       <p class="heading">Location</p>
-                      <p class="title is-5">{{ getLocationName(activity.locationId) }}</p>
+                      <p class="title is-5">{{ getLocationName(activity.locationid) }}</p>
                     </div>
                   </div>
                   <div class="columns is-mobile mt-2">
@@ -464,7 +464,7 @@ function formatDuration(minutes: number): string {
                   </span>
                   <span>Edit</span>
                 </a>
-                <a class="card-footer-item" @click="deleteActivity(activity.activityId!)">
+                <a class="card-footer-item" @click="deleteActivity(activity.activityid!)">
                   <span class="icon">
                     <i class="fas fa-trash-alt"></i>
                   </span>

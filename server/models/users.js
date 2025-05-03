@@ -64,7 +64,7 @@ async function update(id, user) {
   const { data: updatedUser, error } = await connect()
     .from(TABLE_NAME)
     .update(user)
-    .eq("userId", id)
+    .eq("userid", id)
     .select("*");
   if (error) {
     throw error;
@@ -76,7 +76,7 @@ async function remove(id) {
   const { data: deletedUser, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("userId", id);
+    .eq("userid", id);
   if (error) {
     throw error;
   }
