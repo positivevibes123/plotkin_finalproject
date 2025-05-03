@@ -3,7 +3,7 @@ import {ref} from 'vue'
 // Handling user activities (maybe move to a separate file...)
 
 type activityFormat = {
-    userId: number,
+    userid: number,
     description: string
     date: string
     duration: number
@@ -18,9 +18,9 @@ type activityFormat = {
     return activities;
   }
 
-  export function addActivity(userId : number, desc : string, date : string, duration: number, distance: number, loc : string) {
+  export function addActivity(userid : number, desc : string, date : string, duration: number, distance: number, loc : string) {
     const activityObject = {
-      userId: userId,
+      userid: userid,
       description: desc,
       date: date,
       duration: duration,
@@ -36,18 +36,18 @@ type activityFormat = {
     activities.value.splice(index, 1);
   }
 
-  export function getActivitiesByUserId(userId: number) {
-    return activities.value.filter(activity => activity.userId === userId);
+  export function getActivitiesByUserId(userid: number) {
+    return activities.value.filter(activity => activity.userid === userid);
   }
 
-  export function getActivitiesExcludingUserId(userId: number) {
-    return activities.value.filter(activity => activity.userId !== userId);
+  export function getActivitiesExcludingUserId(userid: number) {
+    return activities.value.filter(activity => activity.userid !== userid);
   }
 
   // Handling users
 
   type userFormat = {
-    userId: number
+    userid: number
     username: string
     firstName: string
     lastName: string
@@ -63,7 +63,7 @@ type activityFormat = {
 
   export function addUser(username: string, firstName: string, lastName: string, email: string, isAdmin: boolean) {
     const userObject = {
-      userId: users.value.length + 1,
+      userid: users.value.length + 1,
       username: username,
       firstName: firstName,
       lastName: lastName,
@@ -75,38 +75,38 @@ type activityFormat = {
     users.value.push(userObject);
   }
   
-  export function removeUser(userId: number) {
-    const index = users.value.findIndex(user => user.userId === userId);
+  export function removeUser(userid: number) {
+    const index = users.value.findIndex(user => user.userid === userid);
     users.value.splice(index, 1);
   }
 
   export function getUserById(id: number) {
-    return users.value.find(user => user.userId === id);
+    return users.value.find(user => user.userid === id);
   }
 
-  export function getFullName(userId: number) {
-    const user = getUserById(userId);
+  export function getFullName(userid: number) {
+    const user = getUserById(userid);
     return user ? `${user.firstName} ${user.lastName}` : '';
   }
 
-  export function getUsersExcludingUserId(userId: number) {
-    return users.value.filter(user => user.userId !== userId);
+  export function getUsersExcludingUserId(userid: number) {
+    return users.value.filter(user => user.userid !== userid);
   }
 
-  const signedInUserId = ref(0);
+  const signedInUserid = ref(0);
 
   export function refSignedInUserId() {
-    return signedInUserId;
+    return signedInUserid;
   }
 
   export function isSignedInUserAdmin() {
-    return getUserById(signedInUserId.value)?.isAdmin;
+    return getUserById(signedInUserid.value)?.isAdmin;
   }
   
   // Add some generic users to the array
   
   users.value.push({
-    userId: 1,
+    userid: 1,
     username: 'rbcca',
     firstName: 'Rebecca',
     lastName: 'Workentheen',
@@ -115,7 +115,7 @@ type activityFormat = {
   })
 
   users.value.push({
-    userId: 2,
+    userid: 2,
     username: 'inunez',
     firstName: 'Ivan',
     lastName: 'Noonez',
@@ -124,7 +124,7 @@ type activityFormat = {
   })
 
   users.value.push({
-    userId: 3,
+    userid: 3,
     username: 'damor',
     firstName: 'Daniel',
     lastName: 'Amoruso',

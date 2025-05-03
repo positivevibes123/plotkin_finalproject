@@ -22,7 +22,7 @@ router
 
         model.get(id).then((data) => {
             // Check if the activity belongs to the user or user is admin
-            if (data[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (data[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to access this activity',
                     isSuccess: false
@@ -41,9 +41,9 @@ router
     .post('/', (req, res, next) => {
         const newValues = req.body
 
-        // Ensure the userId in the activity matches the authenticated user
+        // Ensure the userid in the activity matches the authenticated user
         // unless the user is an admin
-        if (newValues.userId !== req.user.userid && !req.user.isAdmin) {
+        if (newValues.userid !== req.user.userid && !req.user.isAdmin) {
             return res.status(403).json({
                 message: 'You can only create activities for yourself',
                 isSuccess: false
@@ -67,7 +67,7 @@ router
         // First get the activity to check ownership
         model.get(id).then((activity) => {
             // Check if the activity belongs to the user or user is admin
-            if (activity[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (activity[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to update this activity',
                     isSuccess: false
@@ -92,7 +92,7 @@ router
         // First get the activity to check ownership
         model.get(id).then((activity) => {
             // Check if the activity belongs to the user or user is admin
-            if (activity[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (activity[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to delete this activity',
                     isSuccess: false

@@ -14,11 +14,11 @@ async function getAll() {
   };
 }
 
-async function getByUserId(userId) {
+async function getByUserId(userid) {
   const { data: activities, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("userId", userId);
+    .eq("userid", userid);
   
   if (error) {
     throw error;
@@ -31,7 +31,7 @@ async function get(id) {
   const { data: activity, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("activityId", id);
+    .eq("activityid", id);
   if (!activity.length) {
     throw new CustomError("User not found", statusCodes.NOT_FOUND);
   }
@@ -58,7 +58,7 @@ async function update(id, activity) {
   const { data: updatedActivity, error } = await connect()
     .from(TABLE_NAME)
     .update(activity)
-    .eq("activityId", id)
+    .eq("activityid", id)
     .select("*");
   if (error) {
     throw error;
@@ -70,7 +70,7 @@ async function remove(id) {
   const { data: deletedActivity, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("activityId", id);
+    .eq("activityid", id);
   if (error) {
     throw error;
   }

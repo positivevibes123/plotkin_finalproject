@@ -14,11 +14,11 @@ async function getAll() {
   };
 }
 
-async function getByUserId(userId) {
+async function getByUserId(userid) {
   const { data: locations, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("userId", userId);
+    .eq("userid", userid);
   
   if (error) {
     throw error;
@@ -31,7 +31,7 @@ async function get(id) {
   const { data: location, error } = await connect()
     .from(TABLE_NAME)
     .select("*")
-    .eq("locationId", id);
+    .eq("locationid", id);
   if (!location.length) {
     throw new CustomError("Location not found", statusCodes.NOT_FOUND);
   }
@@ -58,7 +58,7 @@ async function update(id, location) {
   const { data: updatedLocation, error } = await connect()
     .from(TABLE_NAME)
     .update(location)
-    .eq("locationId", id)
+    .eq("locationid", id)
     .select("*");
   if (error) {
     throw error;
@@ -70,7 +70,7 @@ async function remove(id) {
   const { data: deletedLocation, error } = await connect()
     .from(TABLE_NAME)
     .delete()
-    .eq("locationId", id);
+    .eq("locationid", id);
   if (error) {
     throw error;
   }

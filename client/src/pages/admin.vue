@@ -18,7 +18,7 @@ const errorMessage = ref('')
 const successMessage = ref('')
 
 const getInitialForm = () => ({
-  userId: undefined as number | undefined,
+  userid: undefined as number | undefined,
   username: '',
   password: '',
   firstname: '',
@@ -56,7 +56,7 @@ function showEditForm(user: UserWithActions) {
   editMode.value = true
   formActive.value = true
   formData.value = {
-    userId: user.userId,
+    userid: user.userid,
     username: user.username,
     password: '', // Don't populate password for security
     firstname: user.firstname,
@@ -71,7 +71,7 @@ async function handleSubmit() {
     errorMessage.value = ''
     loading.value = true
     
-    if (editMode.value && formData.value.userId) {
+    if (editMode.value && formData.value.userid) {
       // Update existing user
       const userData = { ...formData.value }
       
@@ -83,7 +83,7 @@ async function handleSubmit() {
       }
       
       const response = await api<DataEnvelope<User>>(
-        `users/${userData.userId}`,
+        `users/${userData.userid}`,
         dataToSend,
         'PATCH'
       )
@@ -121,14 +121,14 @@ async function handleSubmit() {
   }
 }
 
-async function deleteUser(userId: number) {
+async function deleteUserId(userid: number) {
   if (!confirm('Are you sure you want to delete this user?')) {
     return
   }
   
   try {
     loading.value = true
-    const response = await api<DataEnvelope<any>>(`users/${userId}`, null, 'DELETE')
+    const response = await api<DataEnvelope<any>>(`users/${userid}`, null, 'DELETE')
     
     if (response.isSuccess) {
       successMessage.value = 'User deleted successfully'
@@ -358,8 +358,8 @@ function resetForm() {
             </tr>
           </thead>
           <tbody v-if="users.length > 0">
-            <tr v-for="user in users" :key="user.userId">
-              <td>{{ user.userId }}</td>
+            <tr v-for="user in users" :key="user.userid">
+              <td>{{ user.userid }}</td>
               <td>{{ user.username }}</td>
               <td>{{ user.firstname }} {{ user.lastname }}</td>
               <td>{{ user.email }}</td>
@@ -379,8 +379,8 @@ function resetForm() {
                   <button 
                     class="button is-warning" 
                     @click="showEditForm(user)"
-                    :disabled="loading || user.userId === getSession()?.decoded?.userid"
-                    :title="user.userId === getSession()?.decoded?.userid ? 'Cannot edit your own account' : 'Edit user'"
+                    :disabled="loading || user.userid === getSession()?.decoded?.userid"
+                    :title="user.userid === getSession()?.decoded?.userid ? 'Cannot edit your own account' : 'Edit user'"
                   >
                     <span class="icon">
                       <i class="fas fa-edit"></i>
@@ -388,9 +388,9 @@ function resetForm() {
                   </button>
                   <button 
                     class="button is-danger" 
-                    @click="deleteUser(user.userId!)"
-                    :disabled="loading || user.userId === getSession()?.decoded?.userid"
-                    :title="user.userId === getSession()?.decoded?.userid ? 'Cannot delete your own account' : 'Delete user'"
+                    @click="deleteUserId(user.userid!)"
+                    :disabled="loading || user.userid === getSession()?.decoded?.userid"
+                    :title="user.userid === getSession()?.decoded?.userid ? 'Cannot delete your own account' : 'Delete user'"
                   >
                     <span class="icon">
                       <i class="fas fa-trash-alt"></i>

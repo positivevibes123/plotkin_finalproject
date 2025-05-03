@@ -2,7 +2,7 @@ import { api } from './session'
 import type { DataListEnvelope, DataEnvelope } from './dataEnvelope'
 
 export interface User {
-    userId?: number,
+    userid?: number,
     username: string,
     password: string,
     firstname: string,
@@ -12,7 +12,7 @@ export interface User {
 }
 
 export interface UserResponse extends Omit<User, 'password'> {
-    userId: number
+    userid: number
 }
 
 export async function addUser(user: Omit<User, 'id'>): Promise<DataEnvelope<string>> {
@@ -46,4 +46,3 @@ export async function get(id: number) : Promise<DataEnvelope<User>> {
 
     return response
   }
-  

@@ -43,7 +43,7 @@ router
 
         model.get(id).then((data) => {
             // Check if the location belongs to the user or user is admin
-            if (data[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (data[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to access this location',
                     isSuccess: false
@@ -62,9 +62,9 @@ router
     .post('/', verifyAccessToken, (req, res, next) => {
         const newValues = req.body
         
-        // Ensure the userId in the location matches the authenticated user
+        // Ensure the userid in the location matches the authenticated user
         // unless the user is an admin
-        if (newValues.userId !== req.user.userid && !req.user.isAdmin) {
+        if (newValues.userid !== req.user.userid && !req.user.isAdmin) {
             return res.status(403).json({
                 message: 'You can only create locations for yourself',
                 isSuccess: false
@@ -88,7 +88,7 @@ router
         // First get the location to check ownership
         model.get(id).then((location) => {
             // Check if the location belongs to the user or user is admin
-            if (location[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (location[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to update this location',
                     isSuccess: false
@@ -113,7 +113,7 @@ router
         // First get the location to check ownership
         model.get(id).then((location) => {
             // Check if the location belongs to the user or user is admin
-            if (location[0].userId !== req.user.userid && !req.user.isAdmin) {
+            if (location[0].userid !== req.user.userid && !req.user.isAdmin) {
                 return res.status(403).json({
                     message: 'You are not authorized to delete this location',
                     isSuccess: false

@@ -464,7 +464,7 @@ function formatDuration(minutes: number): string {
                   </span>
                   <span>Edit</span>
                 </a>
-                <a class="card-footer-item" @click="deleteActivity(activity.activityid!)">
+                <a class="card-footer-item" @click="activity.activityid && deleteActivity(activity.activityid)">
                   <span class="icon">
                     <i class="fas fa-trash-alt"></i>
                   </span>
