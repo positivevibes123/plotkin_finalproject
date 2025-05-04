@@ -280,19 +280,19 @@ function clearFilters() {
                     <div class="column">
                       <div class="stat-box">
                         <p class="heading">Distance</p>
-                        <p class="title is-4">{{ activity.distance }} mi</p>
+                        <p class="title is-4 has-text-black">{{ activity.distance }} mi</p>
                       </div>
                     </div>
                     <div class="column">
                       <div class="stat-box">
                         <p class="heading">Duration</p>
-                        <p class="title is-4">{{ formatDuration(activity.duration) }}</p>
+                        <p class="title is-4 has-text-black">{{ formatDuration(activity.duration) }}</p>
                       </div>
                     </div>
                     <div class="column">
                       <div class="stat-box">
                         <p class="heading">Pace</p>
-                        <p class="title is-4">
+                        <p class="title is-4 has-text-black">
                           {{ (activity.distance / (activity.duration / 60)).toFixed(1) }} mph
                         </p>
                       </div>
