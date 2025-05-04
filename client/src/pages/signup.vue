@@ -11,7 +11,6 @@ const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const email = ref('')
-const isAdmin = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 
@@ -48,7 +47,7 @@ async function handleSubmit() {
     username: username.value,
     password: password.value,
     email: email.value,
-    isadmin: isAdmin.value
+    isadmin: false
   }
 
   try {
@@ -185,16 +184,7 @@ async function handleSubmit() {
                       <i class="fas fa-lock"></i>
                     </span>
                   </div>
-                </div>
-
-                <div class="field mt-4">
-                  <div class="control">
-                    <label class="checkbox">
-                      <input type="checkbox" v-model="isAdmin" />
-                      Register as an Administrator
-                    </label>
-                  </div>
-                </div>
+                </div>               
 
                 <div class="field mt-5">
                   <button 
