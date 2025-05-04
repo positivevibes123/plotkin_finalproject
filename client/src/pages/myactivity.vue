@@ -18,7 +18,6 @@ interface Activity {
   duration: number;
   distance: number;
   locationid: number;
-  date?: string;
   location?: Location;
 }
 
@@ -35,7 +34,6 @@ const getInitialForm = () => ({
   activityid: undefined as number | undefined,
   userid: getSession()?.decoded?.userid,
   description: '',
-  date: new Date().toISOString().slice(0, 10),
   duration: 0,
   distance: 0,
   locationid: 0,
@@ -100,7 +98,6 @@ function showEditForm(activity: Activity) {
     activityid: activity.activityid,
     userid: activity.userid,
     description: activity.description,
-    date: activity.date || new Date().toISOString().slice(0, 10),
     duration: activity.duration,
     distance: activity.distance,
     locationid: activity.locationid,
@@ -134,7 +131,6 @@ async function handleSubmit() {
       duration: Number(formData.value.duration),
       distance: Number(formData.value.distance),
       locationid: locationid,
-      date: formData.value.date
     }
     
     if (editMode.value && formData.value.activityid) {
@@ -279,19 +275,7 @@ function formatDuration(minutes: number): string {
                     required
                   />
                 </div>
-              </div>
-              
-              <div class="field">
-                <label class="label">Date</label>
-                <div class="control">
-                  <input
-                    type="date"
-                    class="input"
-                    v-model="formData.date"
-                    required
-                  />
-                </div>
-              </div>
+              </div>         
               
               <div class="columns">
                 <div class="column">
@@ -435,11 +419,7 @@ function formatDuration(minutes: number): string {
               </header>
               <div class="card-content">
                 <div class="content">
-                  <div class="columns is-mobile">
-                    <div class="column">
-                      <p class="heading">Date</p>
-                      <p class="title is-5">{{ activity.date }}</p>
-                    </div>
+                  <div class="columns is-mobile">                   
                     <div class="column">
                       <p class="heading">Location</p>
                       <p class="title is-5">{{ getLocationName(activity.locationid) }}</p>
