@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { isLoggedIn, getSession } from '@/models/session'
+import { isLoggedIn } from '@/models/session'
 import { api } from '@/models/session'
-import type { DataEnvelope, DataListEnvelope } from '@/models/dataEnvelope'
+import type { DataListEnvelope } from '@/models/dataEnvelope'
 import { useRouter } from 'vue-router'
 
 interface User {
@@ -15,7 +15,7 @@ interface User {
 
 interface Location {
   locationid: number;
-  locationName: string;
+  locationname: string;
   userid: number;
 }
 
@@ -28,12 +28,12 @@ interface Activity {
   locationid: number;
   date?: string;
   user?: User;
-  location?: Location;
 }
 
 const router = useRouter()
 const activities = ref<Activity[]>([])
 const users = ref<User[]>([])
+const locations = ref<Location[]>([])
 const loading = ref(false)
 const errorMessage = ref('')
 const searchTerm = ref('')
@@ -51,7 +51,7 @@ const filteredActivities = computed(() => {
     const term = searchTerm.value.toLowerCase()
     result = result.filter(activity => 
       activity.description.toLowerCase().includes(term) ||
-      activity.location?.locationName.toLowerCase().includes(term) ||
+      getLocationName(activity.locationid).toLowerCase().includes(term) ||
       getUserFullName(activity.userid).toLowerCase().includes(term)
     )
   }
@@ -71,7 +71,8 @@ onMounted(async () => {
   
   await Promise.all([
     loadActivities(),
-    loadUsers()
+    loadUsers(),
+    loadLocations()
   ])
 })
 
@@ -101,6 +102,17 @@ async function loadUsers() {
   }
 }
 
+async function loadLocations() {
+  try {
+    const response = await api<DataListEnvelope<Location>>('locations')
+    if (response && response.data) {
+      locations.value = response.data
+    }
+  } catch (error) {
+    console.error('Error loading locations:', error)
+  }
+}
+
 function getUserFullName(userid: number): string {
   const user = users.value.find(u => u.userid === userid)
   return user ? `${user.firstname} ${user.lastname}` : 'Unknown User'
@@ -115,8 +127,8 @@ function getUserAvatar(userid: number): string {
 }
 
 function getLocationName(locationid: number): string {
-  const activity = activities.value.find(a => a.locationid === locationid)
-  return activity?.location?.locationName || 'Unknown location'
+  const location = locations.value.find(l => l.locationid === locationid)
+  return location?.locationname || 'Unknown location'
 }
 
 function formatDuration(minutes: number): string {
