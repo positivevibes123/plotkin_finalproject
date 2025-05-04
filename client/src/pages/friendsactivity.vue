@@ -38,6 +38,10 @@ const loading = ref(false)
 const errorMessage = ref('')
 const searchTerm = ref('')
 
+const activityDescriptions = computed(() => {
+  return activities.value.map(activity => activity.description)
+})
+
 // Computed property for filtered activities
 const filteredActivities = computed(() => {
   let result = activities.value
@@ -58,7 +62,6 @@ const filteredActivities = computed(() => {
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 })
-
 // Load data on component mount
 onMounted(async () => {
   if (!isLoggedIn()) {
@@ -163,11 +166,13 @@ function clearFilters() {
               <div class="field">
                 <label class="label">Search</label>
                 <div class="control has-icons-left">
-                  <input
-                    type="text"
+                  <o-autocomplete
+                    :options=activityDescriptions
                     class="input"
                     placeholder="Search by activity description"
                     v-model="searchTerm"
+                    @input="(e: string) => searchTerm = e"
+                    open-on-focus
                   />
                   <span class="icon is-small is-left">
                     <i class="fas fa-search"></i>
