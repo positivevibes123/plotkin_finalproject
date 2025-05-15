@@ -178,6 +178,7 @@ function clearFilters() {
               <div class="field">
                 <label class="label">Search</label>
                 <div class="control has-icons-left">
+                <!-- Oruga autocomplete for activities -->
                   <o-autocomplete
                     :options=activityDescriptions
                     class="input"
